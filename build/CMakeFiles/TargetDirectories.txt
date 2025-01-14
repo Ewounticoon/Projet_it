@@ -35,3 +35,15 @@
 /root/ros_workspace/build/gtest/googletest/CMakeFiles/test.dir
 /root/ros_workspace/build/gtest/googletest/CMakeFiles/gtest_main.dir
 /root/ros_workspace/build/gtest/googletest/CMakeFiles/gtest.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/install/strip.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/list_install_components.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/install.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/test.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/edit_cache.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/std_msgs_generate_messages_nodejs.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/std_msgs_generate_messages_py.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/std_msgs_generate_messages_lisp.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/install/local.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/rebuild_cache.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/std_msgs_generate_messages_eus.dir
+/root/ros_workspace/build/sensors/src/CMakeFiles/std_msgs_generate_messages_cpp.dir
