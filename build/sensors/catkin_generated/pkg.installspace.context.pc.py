@@ -5,4 +5,4 @@ PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "sensors"
 PROJECT_SPACE_DIR = "/root/ros_workspace/install"
-PROJECT_VERSION = "0.0.0"
+PROJECT_VERSION = "0.0.1"
