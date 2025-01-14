@@ -11,7 +11,7 @@ catkin_package()
 
 # Installer les scripts Python
 catkin_install_python(PROGRAMS
-  dht11_sensor_node.py  # Chemin vers votre script Python
+  src/dht11_sensor_node.py  # Chemin vers votre script Python
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

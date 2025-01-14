@@ -1,2 +1,2 @@
 database:sensors
--DCATKIN_DEVEL_PREFIX=/root/ros_workspace/Projet_it/devel -DCMAKE_INSTALL_PREFIX=/root/ros_workspace/Projet_it/install -G Unix Makefiles
+-DCATKIN_DEVEL_PREFIX=/root/ros_workspace/devel -DCMAKE_INSTALL_PREFIX=/root/ros_workspace/install -G Unix Makefiles
