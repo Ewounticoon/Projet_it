@@ -355,6 +355,15 @@ NOSETESTS:FILEPATH=/usr/bin/nosetests3
 //Path to a program.
 PYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3
 
+//Path to a file.
+PYTHON_INCLUDE_DIR:PATH=/usr/include/python3.8
+
+//Path to a library.
+PYTHON_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libpython3.8.so
+
+//Path to a library.
+PYTHON_LIBRARY_DEBUG:FILEPATH=PYTHON_LIBRARY_DEBUG-NOTFOUND
+
 //Specify specific Python version to use ('major.minor' or 'major')
 PYTHON_VERSION:STRING=3
 
@@ -674,6 +683,8 @@ CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 FIND_PACKAGE_MESSAGE_DETAILS_PY_em:INTERNAL=[/usr/lib/python3/dist-packages/em.py][v()]
 //Details about finding PythonInterp
 FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/usr/bin/python3][v3.8.10()]
+//Details about finding PythonLibs
+FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs:INTERNAL=[/usr/lib/aarch64-linux-gnu/libpython3.8.so][/usr/include/python3.8][v3.8.10()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 GMOCK_FROM_SOURCE_FOUND:INTERNAL=TRUE
@@ -706,10 +717,16 @@ GTEST_MAIN_LIBRARY-ADVANCED:INTERNAL=1
 GTEST_MAIN_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PYTHON_EXECUTABLE
 PYTHON_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PYTHON_INCLUDE_DIR
+PYTHON_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //This needs to be in PYTHONPATH when 'setup.py install' is called.
 //  And it needs to match.  But setuptools won't tell us where
 // it will install things.
 PYTHON_INSTALL_DIR:INTERNAL=lib/python3/dist-packages
+//ADVANCED property for variable: PYTHON_LIBRARY
+PYTHON_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PYTHON_LIBRARY_DEBUG
+PYTHON_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/root/ros_workspace/install
 //ADVANCED property for variable: gmock_build_tests
