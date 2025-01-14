@@ -1,0 +1,8 @@
+prefix=/root/ros_workspace/install
+
+Name: sensors
+Description: Description of sensors
+Version: 0.0.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
