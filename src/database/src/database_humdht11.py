@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#code permettant de lire le topic "tempDHT11", récupère la valeur de la température, et écrit l'info dans une BBD sous la forme :
+#code permettant de lire le topic "humDHT11", récupère la valeur de l'humidite, et écrit l'info dans une BBD sous la forme :
 # ID (int) | Heure (datatime) |  Valeur (float32)
 
 import sqlite3
@@ -9,7 +9,7 @@ import rospy  # ROS Python
 from std_msgs.msg import Float32  # Message ROS pour la température (type Float32)
 from datetime import datetime
 
-db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_temperature.db') #chemin d'acces
+db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_humidite.db') #chemin d'acces
 # Création de la base de données
 def create_database():
     
@@ -17,13 +17,13 @@ def create_database():
     cursor = conn.cursor()
     try :
         cursor.execute('''
-        	CREATE TABLE IF NOT EXISTS temperature (
+        	CREATE TABLE IF NOT EXISTS humidite (
             	id INTEGER PRIMARY KEY AUTOINCREMENT,
             	date_time TEXT NOT NULL,
-                temperature REAL NOT NULL
+                humidite REAL NOT NULL
                 )
         ''')
-        rospy.loginfo("Creation de la table pour la temperature") #DEBUG
+        rospy.loginfo("Creation de la table pour huidite") #DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de la creation : {e}")
     finally:
@@ -31,35 +31,35 @@ def create_database():
         conn.close()
 
 # Insertion des mesures dans la base de données
-def insert_measurement(temperature):
+def insert_measurement(humidite):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO temperature (date_time, temperature)
+        INSERT INTO humidite (date_time, humidite)
         VALUES (?, ?)
-    ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), temperature))
-    rospy.loginfo(f"Ecriture dans la table (temperature) : {temperature} °C") #DEBUG
+    ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), humidite))
+    rospy.loginfo(f"Ecriture dans la table (humidite) : {humidite} %") #DEBUG
     conn.commit()
     conn.close()
 
 # Callback pour traiter les messages du topic
-def temperature_callback(msg):
-    temperature = msg.data  # La température est stockée dans msg.data
-    rospy.loginfo(f"Température reçue : {temperature}°C")
-    insert_measurement(temperature)  # Enregistrer dans la base de données
+def hum_callback(msg):
+    humidite = msg.data  # La température est stockée dans msg.data
+    rospy.loginfo(f"humidite reçue : {humidite} %")
+    insert_measurement(humidite)  # Enregistrer dans la base de données
 
 # Nœud ROS pour écouter le topic et enregistrer les données
-def temperature_listener():
+def hum_listener():
     # Initialisation du nœud ROS
-    rospy.init_node('temperature_listener', anonymous=True)
+    rospy.init_node('humidite_listener', anonymous=True)
     
     # S'abonner au topic "topic_tempDHT11" pour récupérer les données de température /!\ Penser a modif en cas de chgnt de nom
-    rospy.Subscriber('topic_tempDHT11', Float32, temperature_callback)
+    rospy.Subscriber('topic_humDHT11', Float32, hum_callback)
     
     # Créer la base de données si elle n'existe pas
     create_database()
     
-    rospy.loginfo("Écoute du topic 'topic_tempDHT11'. Enregistrement des températures dans la base de données.")
+    rospy.loginfo("Écoute du topic 'topic_humDHT11'. Enregistrement de l'humidite dans la base de données.")
     
     # Maintenir le nœud actif
     rospy.spin()
@@ -67,6 +67,7 @@ def temperature_listener():
 # Programme principal
 if __name__ == '__main__':
     try:
-        temperature_listener()
+        hum_listener()
     except rospy.ROSInterruptException:
         pass
+
