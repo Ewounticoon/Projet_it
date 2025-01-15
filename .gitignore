@@ -1,15 +1,21 @@
 build/
 devel/
 <<<<<<< HEAD
+<<<<<<< HEAD
 logs/
 log/
 install/
 *.swp
 .DS_Store
 =======
+=======
+>>>>>>> 893e0bff19024040f38e3339bf9c3152c5799815
 install/
 log/
 logs/
 *.swp
 *.DS_Store
+<<<<<<< HEAD
 >>>>>>> ef385cab24f08ca91af268df0737273a8e272298
+=======
+>>>>>>> 893e0bff19024040f38e3339bf9c3152c5799815
