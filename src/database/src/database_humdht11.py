@@ -23,7 +23,7 @@ def create_database():
                 humidite REAL NOT NULL
                 )
         ''')
-        rospy.loginfo("Creation de la table") #DEBUG
+        rospy.loginfo("Creation de la table pour huidite") #DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de la creation : {e}")
     finally:
@@ -38,7 +38,7 @@ def insert_measurement(humidite):
         INSERT INTO humidite (date_time, humidite)
         VALUES (?, ?)
     ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), humidite))
-    rospy.loginfo(f"Ecriture dans la table : {humidite}") #DEBUG
+    rospy.loginfo(f"Ecriture dans la table (humidite) : {humidite} %") #DEBUG
     conn.commit()
     conn.close()
 
