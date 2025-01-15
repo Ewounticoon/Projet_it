@@ -10,4 +10,6 @@
         <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
         <!-- Exemple : <param name="param_name" value="param_value" /> -->
     </node>
+    <node pkg="database" type="database_humdht11.py" name="database_humdht11" output="screen">
+    </node>
 </launch>
