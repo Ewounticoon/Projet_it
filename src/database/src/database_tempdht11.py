@@ -13,14 +13,14 @@ def create_database():
     conn = sqlite3.connect('./dht11_temperature.db')  # Nom de la base de données
     cursor = conn.cursor()
     try :
-    	cursor.execute('''
+        cursor.execute('''
         	CREATE TABLE IF NOT EXISTS temperature (
             	id INTEGER PRIMARY KEY AUTOINCREMENT,
             	date_time TEXT NOT NULL,
-            	temperature REAL NOT NULL
+                temperature REAL NOT NULL
                 )
         ''')
-    	rospy.loginfo("Creation de la table") #DEBUG
+        rospy.loginfo("Creation de la table") #DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de la creation : {e}")
     finally:
