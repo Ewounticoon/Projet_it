@@ -4,13 +4,15 @@
 # ID (int) | Heure (datatime) |  Valeur (float32)
 
 import sqlite3
+import os
 import rospy  # ROS Python
 from std_msgs.msg import Float32  # Message ROS pour la température (type Float32)
 from datetime import datetime
 
 # Création de la base de données
 def create_database():
-    conn = sqlite3.connect('~/ros_workspace/src/database/src/dht11_temperature.db')  # Nom de la base de données
+    db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_temperature.db') #chemin d'acces
+    conn = sqlite3.connect(db_path) 
     cursor = conn.cursor()
     try :
         cursor.execute('''
