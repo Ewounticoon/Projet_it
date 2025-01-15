@@ -23,7 +23,7 @@ def create_database():
                 temperature REAL NOT NULL
                 )
         ''')
-        rospy.loginfo("Creation de la table") #DEBUG
+        rospy.loginfo("Creation de la table pour la temperature") #DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de la creation : {e}")
     finally:
@@ -38,7 +38,7 @@ def insert_measurement(temperature):
         INSERT INTO temperature (date_time, temperature)
         VALUES (?, ?)
     ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), temperature))
-    rospy.loginfo(f"Ecriture dans la table : {temperature}") #DEBUG
+    rospy.loginfo(f"Ecriture dans la table (temperature) : {temperature} °C") #DEBUG
     conn.commit()
     conn.close()
 
