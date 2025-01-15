@@ -9,9 +9,10 @@ import rospy  # ROS Python
 from std_msgs.msg import Float32  # Message ROS pour la température (type Float32)
 from datetime import datetime
 
+db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_temperature.db') #chemin d'acces
 # Création de la base de données
 def create_database():
-    db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_temperature.db') #chemin d'acces
+    
     conn = sqlite3.connect(db_path) 
     cursor = conn.cursor()
     try :
@@ -31,7 +32,7 @@ def create_database():
 
 # Insertion des mesures dans la base de données
 def insert_measurement(temperature):
-    conn = sqlite3.connect('dht11_temperature.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO temperature (date_time, temperature)
