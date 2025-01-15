@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 #code permettant de lire le topic "humDHT11", récupère la valeur de l'humidite, et écrit l'info dans une BBD sous la forme :
