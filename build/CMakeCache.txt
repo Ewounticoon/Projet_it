@@ -325,13 +325,13 @@ GMock_DIR:PATH=GMock_DIR-NOTFOUND
 GTEST_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
-GTEST_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libgtest.a
+GTEST_LIBRARY:FILEPATH=/usr/lib/arm-linux-gnueabihf/libgtest.a
 
 //Path to a library.
 GTEST_LIBRARY_DEBUG:FILEPATH=GTEST_LIBRARY_DEBUG-NOTFOUND
 
 //Path to a library.
-GTEST_MAIN_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libgtest_main.a
+GTEST_MAIN_LIBRARY:FILEPATH=/usr/lib/arm-linux-gnueabihf/libgtest_main.a
 
 //Path to a library.
 GTEST_MAIN_LIBRARY_DEBUG:FILEPATH=GTEST_MAIN_LIBRARY_DEBUG-NOTFOUND
@@ -359,7 +359,7 @@ PYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3
 PYTHON_INCLUDE_DIR:PATH=/usr/include/python3.8
 
 //Path to a library.
-PYTHON_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libpython3.8.so
+PYTHON_LIBRARY:FILEPATH=/usr/lib/arm-linux-gnueabihf/libpython3.8.so
 
 //Path to a library.
 PYTHON_LIBRARY_DEBUG:FILEPATH=PYTHON_LIBRARY_DEBUG-NOTFOUND
@@ -377,13 +377,13 @@ Project_BINARY_DIR:STATIC=/root/ros_workspace/build
 Project_SOURCE_DIR:STATIC=/root/ros_workspace/src
 
 //Path to a library.
-RT_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/librt.so
+RT_LIBRARY:FILEPATH=/usr/lib/arm-linux-gnueabihf/librt.so
 
 //Enable debian style python package layout
 SETUPTOOLS_DEB_LAYOUT:BOOL=ON
 
 //Name of the computer/site where compile is being run
-SITE:STRING=a132d197faf9
+SITE:STRING=6fa6c1397db9
 
 //LSB Distrib tag
 UBUNTU:BOOL=TRUE
@@ -684,7 +684,7 @@ FIND_PACKAGE_MESSAGE_DETAILS_PY_em:INTERNAL=[/usr/lib/python3/dist-packages/em.p
 //Details about finding PythonInterp
 FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/usr/bin/python3][v3.8.10()]
 //Details about finding PythonLibs
-FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs:INTERNAL=[/usr/lib/aarch64-linux-gnu/libpython3.8.so][/usr/include/python3.8][v3.8.10()]
+FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs:INTERNAL=[/usr/lib/arm-linux-gnueabihf/libpython3.8.so][/usr/include/python3.8][v3.8.10()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 GMOCK_FROM_SOURCE_FOUND:INTERNAL=TRUE

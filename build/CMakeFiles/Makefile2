@@ -68,8 +68,8 @@ preinstall: sensors/preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/doxygen.dir/clean
-clean: CMakeFiles/run_tests.dir/clean
 clean: CMakeFiles/clean_test_results.dir/clean
+clean: CMakeFiles/run_tests.dir/clean
 clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/download_extra_data.dir/clean
 clean: gtest/clean
@@ -92,8 +92,8 @@ database/preinstall:
 .PHONY : database/preinstall
 
 # Recursive "clean" directory target.
-database/clean: database/CMakeFiles/std_msgs_generate_messages_py.dir/clean
 database/clean: database/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
+database/clean: database/CMakeFiles/std_msgs_generate_messages_py.dir/clean
 database/clean: database/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
 database/clean: database/CMakeFiles/std_msgs_generate_messages_eus.dir/clean
 database/clean: database/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
@@ -203,33 +203,6 @@ CMakeFiles/doxygen.dir/clean:
 .PHONY : CMakeFiles/doxygen.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/run_tests.dir
-
-# All Build rule for target.
-CMakeFiles/run_tests.dir/all:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/depend
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/ros_workspace/build/CMakeFiles --progress-num= "Built target run_tests"
-.PHONY : CMakeFiles/run_tests.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/run_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/run_tests.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
-.PHONY : CMakeFiles/run_tests.dir/rule
-
-# Convenience name for target.
-run_tests: CMakeFiles/run_tests.dir/rule
-
-.PHONY : run_tests
-
-# clean rule for target.
-CMakeFiles/run_tests.dir/clean:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/clean
-.PHONY : CMakeFiles/run_tests.dir/clean
-
-#=============================================================================
 # Target rules for target CMakeFiles/clean_test_results.dir
 
 # All Build rule for target.
@@ -255,6 +228,33 @@ clean_test_results: CMakeFiles/clean_test_results.dir/rule
 CMakeFiles/clean_test_results.dir/clean:
 	$(MAKE) -f CMakeFiles/clean_test_results.dir/build.make CMakeFiles/clean_test_results.dir/clean
 .PHONY : CMakeFiles/clean_test_results.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/run_tests.dir
+
+# All Build rule for target.
+CMakeFiles/run_tests.dir/all:
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/depend
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/ros_workspace/build/CMakeFiles --progress-num= "Built target run_tests"
+.PHONY : CMakeFiles/run_tests.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/run_tests.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/run_tests.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
+.PHONY : CMakeFiles/run_tests.dir/rule
+
+# Convenience name for target.
+run_tests: CMakeFiles/run_tests.dir/rule
+
+.PHONY : run_tests
+
+# clean rule for target.
+CMakeFiles/run_tests.dir/clean:
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/clean
+.PHONY : CMakeFiles/run_tests.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/tests.dir
@@ -420,33 +420,6 @@ gtest/googletest/CMakeFiles/gtest.dir/clean:
 .PHONY : gtest/googletest/CMakeFiles/gtest.dir/clean
 
 #=============================================================================
-# Target rules for target database/CMakeFiles/std_msgs_generate_messages_py.dir
-
-# All Build rule for target.
-database/CMakeFiles/std_msgs_generate_messages_py.dir/all:
-	$(MAKE) -f database/CMakeFiles/std_msgs_generate_messages_py.dir/build.make database/CMakeFiles/std_msgs_generate_messages_py.dir/depend
-	$(MAKE) -f database/CMakeFiles/std_msgs_generate_messages_py.dir/build.make database/CMakeFiles/std_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/ros_workspace/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_py"
-.PHONY : database/CMakeFiles/std_msgs_generate_messages_py.dir/all
-
-# Build rule for subdir invocation for target.
-database/CMakeFiles/std_msgs_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 database/CMakeFiles/std_msgs_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
-.PHONY : database/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-std_msgs_generate_messages_py: database/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-
-.PHONY : std_msgs_generate_messages_py
-
-# clean rule for target.
-database/CMakeFiles/std_msgs_generate_messages_py.dir/clean:
-	$(MAKE) -f database/CMakeFiles/std_msgs_generate_messages_py.dir/build.make database/CMakeFiles/std_msgs_generate_messages_py.dir/clean
-.PHONY : database/CMakeFiles/std_msgs_generate_messages_py.dir/clean
-
-#=============================================================================
 # Target rules for target database/CMakeFiles/std_msgs_generate_messages_nodejs.dir
 
 # All Build rule for target.
@@ -472,6 +445,33 @@ std_msgs_generate_messages_nodejs: database/CMakeFiles/std_msgs_generate_message
 database/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean:
 	$(MAKE) -f database/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make database/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
 .PHONY : database/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
+
+#=============================================================================
+# Target rules for target database/CMakeFiles/std_msgs_generate_messages_py.dir
+
+# All Build rule for target.
+database/CMakeFiles/std_msgs_generate_messages_py.dir/all:
+	$(MAKE) -f database/CMakeFiles/std_msgs_generate_messages_py.dir/build.make database/CMakeFiles/std_msgs_generate_messages_py.dir/depend
+	$(MAKE) -f database/CMakeFiles/std_msgs_generate_messages_py.dir/build.make database/CMakeFiles/std_msgs_generate_messages_py.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/ros_workspace/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_py"
+.PHONY : database/CMakeFiles/std_msgs_generate_messages_py.dir/all
+
+# Build rule for subdir invocation for target.
+database/CMakeFiles/std_msgs_generate_messages_py.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 database/CMakeFiles/std_msgs_generate_messages_py.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/ros_workspace/build/CMakeFiles 0
+.PHONY : database/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_py: database/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+
+.PHONY : std_msgs_generate_messages_py
+
+# clean rule for target.
+database/CMakeFiles/std_msgs_generate_messages_py.dir/clean:
+	$(MAKE) -f database/CMakeFiles/std_msgs_generate_messages_py.dir/build.make database/CMakeFiles/std_msgs_generate_messages_py.dir/clean
+.PHONY : database/CMakeFiles/std_msgs_generate_messages_py.dir/clean
 
 #=============================================================================
 # Target rules for target database/CMakeFiles/std_msgs_generate_messages_lisp.dir

@@ -10,17 +10,22 @@ from datetime import datetime
 
 # Création de la base de données
 def create_database():
-    conn = sqlite3.connect('dht11_temperature.db')  # Nom de la base de données
+    conn = sqlite3.connect('./dht11_temperature.db')  # Nom de la base de données
     cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS temperature (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date_time TEXT NOT NULL,
-            temperature REAL NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    try :
+    	cursor.execute('''
+        	CREATE TABLE IF NOT EXISTS temperature (
+            	id INTEGER PRIMARY KEY AUTOINCREMENT,
+            	date_time TEXT NOT NULL,
+            	temperature REAL NOT NULL
+                )
+        ''')
+    	rospy.loginfo("Creation de la table") #DEBUG
+    except sqlite3.Error as e:
+        rospy.logerr(f"Erreur lors de la creation : {e}")
+    finally:
+        conn.commit()
+        conn.close()
 
 # Insertion des mesures dans la base de données
 def insert_measurement(temperature):
@@ -30,6 +35,7 @@ def insert_measurement(temperature):
         INSERT INTO temperature (date_time, temperature)
         VALUES (?, ?)
     ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), temperature))
+    rospy.loginfo(f"Ecriture dans la table : {temperature}") #DEBUG
     conn.commit()
     conn.close()
 
