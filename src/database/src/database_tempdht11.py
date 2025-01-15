@@ -10,7 +10,7 @@ from datetime import datetime
 
 # Création de la base de données
 def create_database():
-    conn = sqlite3.connect('./dht11_temperature.db')  # Nom de la base de données
+    conn = sqlite3.connect('dht11_temperature.db')  # Nom de la base de données
     cursor = conn.cursor()
     try :
         cursor.execute('''
