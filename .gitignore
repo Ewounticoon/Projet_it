@@ -1,0 +1,15 @@
+build/
+devel/
+<<<<<<< HEAD
+logs/
+log/
+install/
+*.swp
+.DS_Store
+=======
+install/
+log/
+logs/
+*.swp
+*.DS_Store
+>>>>>>> ef385cab24f08ca91af268df0737273a8e272298

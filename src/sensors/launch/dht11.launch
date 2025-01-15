@@ -1,0 +1,13 @@
+<launch>
+    <!-- Lancer le noeud DHT11 Sensor -->
+    <node pkg="sensors" type="dht11_sensor_node.py" name="dht11_sensor_node" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
+
+    <!-- Lancer le noeud Database Temp DHT11 -->
+    <node pkg="database" type="database_tempdht11.py" name="database_tempdht11" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
+</launch>
