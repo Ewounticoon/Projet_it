@@ -38,14 +38,14 @@ def insert_measurement(volSon):
         INSERT INTO son (date_time, volSon)
         VALUES (?, ?)
     ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), volSon))
-    rospy.loginfo(f"Ecriture dans la table (son) : {volSon} %") #DEBUG
+    rospy.loginfo(f"Ecriture dans la table (son) : {volSon}") #DEBUG
     conn.commit()
     conn.close()
 
 # Callback pour traiter les messages du topic
 def sound_callback(msg):
     volSon = msg.data  # La température est stockée dans msg.data
-    rospy.loginfo(f"volume sonore reçu : {volSon} %")
+    rospy.loginfo(f"volume sonore reçu : {volSon}")
     insert_measurement(volSon)  # Enregistrer dans la base de données
 
 # Nœud ROS pour écouter le topic et enregistrer les données
