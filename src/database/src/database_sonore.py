@@ -20,7 +20,7 @@ def create_database():
         	CREATE TABLE IF NOT EXISTS son (
             	id INTEGER PRIMARY KEY AUTOINCREMENT,
             	date_time TEXT NOT NULL,
-                nivSon REAL NOT NULL
+                volSon REAL NOT NULL
                 )
         ''')
         rospy.loginfo("Creation de la table pour le volume sonore") #DEBUG
@@ -70,4 +70,3 @@ if __name__ == '__main__':
         sound_listener()
     except rospy.ROSInterruptException:
         pass
-
