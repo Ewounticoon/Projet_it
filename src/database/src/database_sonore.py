@@ -35,7 +35,7 @@ def insert_measurement(volSon):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO son (date_time, humidite)
+        INSERT INTO son (date_time, volSon)
         VALUES (?, ?)
     ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), volSon))
     rospy.loginfo(f"Ecriture dans la table (son) : {volSon} %") #DEBUG
@@ -53,7 +53,7 @@ def sound_listener():
     # Initialisation du nœud ROS
     rospy.init_node('sound_listener', anonymous=True)
     
-    # S'abonner au topic "topic_tempDHT11" pour récupérer les données de température /!\ Penser a modif en cas de chgnt de nom
+    # S'abonner au topic "topic_micro" pour récupérer les données du micro
     rospy.Subscriber('topic_micro', Float32, sound_callback)
     
     # Créer la base de données si elle n'existe pas
