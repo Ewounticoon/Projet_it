@@ -1,0 +1,14 @@
+<launch>
+    <!-- Lancer le noeud micro -->
+    <node pkg="sensors" type="micro_sensor_node.py" name="micro_sensor_node" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
+
+    <!-- Lancer le noeud Database sonore -->
+    <node pkg="database" type="database_sonore.py" name="database_sonore" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
+
+</launch>
