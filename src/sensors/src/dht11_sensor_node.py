@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import rospy
 from std_msgs.msg import Float32
 import Adafruit_DHT
@@ -13,7 +15,7 @@ class Node_dht11:
         self.pub_hum = rospy.Publisher('/topic_humDHT11', Float32, queue_size=10)
 
         # Lancer une fonction à intervalle régulier :
-        rospy.Timer(rospy.Duration(0.5), self.pub_donne_dht11)
+        rospy.Timer(rospy.Duration(5), self.pub_donne_dht11)
         
         # Ecrit dans le terminal
         rospy.loginfo("Démarrage du node pour DHT11")
