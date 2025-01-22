@@ -17,12 +17,12 @@ class Node_RFID:
         self.rc522 = RFID()
         
         # Initialisation du publisher (topic pour l'ID RFID)
-        self.pub_rfid = rospy.Publisher('/topic_rfid', String, queue_size=10)
+        self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)  # Utilisation de self.pub_rfid
         
         # Affichage dans le terminal pour l'utilisateur
         rospy.loginfo("En attente d'un badge (pour quitter, Ctrl + c)")
 
-    def read_rfid(self, event):  # Ajoutez l'argument 'event' pour capturer l'argument envoyé par rospy.Timer
+    def read_rfid(self):
         # Boucle infinie pour lire les tags RFID
         while not rospy.is_shutdown():
             self.rc522.wait_for_tag()  # Attente qu'une puce RFID soit détectée
@@ -33,8 +33,9 @@ class Node_RFID:
                 (error, uid) = self.rc522.anticoll()
                 
                 if not error:
-                    # Publier l'UID sur le topic ROS
-                    rfid_id = ''.join(map(str, uid))  # Convertir l'UID en chaîne de caractères
+                    # Convertir l'UID en un entier (si nécessaire)
+                    rfid_id = int(''.join(map(str, uid)))  # Convertir l'UID en un entier
+                    
                     rospy.loginfo(f"Badge détecté avec l'ID : {rfid_id}")
                     
                     # Publier l'ID sur le topic /topic_rfid
@@ -49,6 +50,9 @@ def main():
     
     # Création de l'objet pour la lecture RFID
     rfid_node = Node_RFID()
+    
+    # Lancer la lecture RFID
+    rfid_node.read_rfid()
     
     # Garder le noeud en fonctionnement
     rospy.spin()
