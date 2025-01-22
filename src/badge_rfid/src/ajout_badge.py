@@ -13,20 +13,24 @@ from badge_rfid.srv import ajout_badge, ajout_badgeResponse
 db_path = os.path.expanduser('~/ros_workspace/src/database/src/RFID_infos.db')
 
 # Création de la base de données
-def create_database_mesure():
+def create_database_infos():
     """Création de la table pour les mesures RFID."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS mesures (
+            CREATE TABLE IF NOT EXISTS infos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date_time TEXT NOT NULL,
                 numBadge INT32 NOT NULL,
-                register TEXT NOT NULL
+                prenom TEXT NOT NULL,
+                nom TEXT NOT NULL,
+                age INT32 NOT NULL,
+                email TEXT NOT NULL,
+                mdp TEXT NOT NULL,
+                poste TEXT NOT NULL,
             )
         ''')
-        rospy.loginfo("Création de la table pour les relevés du badge")  # DEBUG
+        rospy.loginfo("Création de la table pour les infos du badge")  # DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de la création de la table : {e}")
     finally:
@@ -39,23 +43,23 @@ def lecture_badge(msg):
     return num_badge
 
 def ajout_badge_base(req):
-    rospy.loginfo(f"Received user info: {req.prenom} {req.nom}, Age: {req.age}, Email: {req.email}, Job: {req.poste}")
+    rospy.loginfo(f"Received user info: {req.prenom} {req.nom}, Age: {req.age}, Email: {req.email},Password : {req.password}, Job: {req.poste}")
     success = True
 
     num_badge=rospy.Subscriber("topic_rfid", Int32, lecture_badge)  # Remplacez Int32 si nécessaire
 
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    register_value = "NO"
+
 
     # Enregistrement dans la base de données
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO mesures (date_time, numBadge, register) 
-            VALUES (?, ?, ?)
-        ''', (timestamp, num_badge, register_value))
-        rospy.loginfo(f"Badge {num_badge} enregistré à {timestamp}")  # DEBUG
+            INSERT INTO mesures (numBadge, prenom, nom, age, email, password, poste) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (num_badge, req.prenom, req.nom, req.age, req.email, req.poste ))
+        rospy.loginfo(f"Badge {num_badge} enregistré avec les différentes infos")  # DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de l'insertion des données : {e}")
     finally:
@@ -74,10 +78,10 @@ def listener():
     rospy.init_node('ajout_badge', anonymous=True)
 
     # Créer la base de données si elle n'existe pas
-    create_database_mesure()
+    create_database_infos()
 
     # Souscrire au topic
-    # rospy.Subscriber("topic_rfid", Int32, rfid_callback)  # Remplacez Int32 si nécessaire
+
     s = rospy.Service('ajout_badge', ajout_badge, ajout_badge_base)
 
 
