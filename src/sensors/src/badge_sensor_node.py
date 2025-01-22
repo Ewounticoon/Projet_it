@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 from pirc522 import RFID
 import time
 
+
 class Node_RFID:
     def __init__(self):
         # Initialisation des GPIOs
