@@ -7,13 +7,19 @@
   <maintainer email="your_email@example.com">Your Name</maintainer>
   <license>BSD</license>
 
-  <!-- ROS dependencies -->
-  <depend>rospy</depend>
-  <depend>std_msgs</depend>
-
-  <!-- External dependencies -->
-  <exec_depend>Adafruit_DHT</exec_depend>
-
   <!-- Build dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>rospy</build_depend>
+
+  <!-- Execution dependencies -->
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>Adafruit_DHT</exec_depend>
+
+  <!-- Export section -->
+  <export>
+  </export>
 </package>

@@ -5,9 +5,25 @@ project(sensors)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
+  message_generation  # Pour générer les messages personnalisés
 )
 
-catkin_package()
+# Déclarer les fichiers de message
+add_message_files(
+  FILES
+  dht11.msg  # Pas besoin de "msg/" ici, juste le nom du fichier
+)
+
+# Générer les messages
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+# Déclarer le package
+catkin_package(
+  CATKIN_DEPENDS message_runtime
+)
 
 # Installer les scripts Python
 catkin_install_python(PROGRAMS
@@ -17,5 +33,6 @@ catkin_install_python(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-# Dépendances Python externes
+# Dépendances Python externes (optionnel, si nécessaire pour votre projet)
 find_package(PythonLibs REQUIRED)
+
