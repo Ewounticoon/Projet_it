@@ -18,7 +18,7 @@ class Node_micro:
 
         # Lancer une fonction à intervalle régulier
         rospy.Timer(rospy.Duration(0.5), self.pub_donne_micro)
-        
+        aa
         # Ecrit dans le terminal
         rospy.loginfo("Publication micro")
 
