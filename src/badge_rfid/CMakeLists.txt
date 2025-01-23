@@ -56,10 +56,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate services in the 'srv' folder
 add_service_files(
-    FILES
-    ajout_badge.srv
-
- )
+   FILES
+   ajout_badge.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -70,8 +69,8 @@ add_service_files(
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-   DEPENDENCIES
-   std_msgs
+  DEPENDENCIES
+  std_msgs
 )
 
 ################################################

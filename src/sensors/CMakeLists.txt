@@ -30,6 +30,9 @@ catkin_install_python(PROGRAMS
   src/dht11_sensor_node.py  # Chemin vers votre script Python
   src/micro_sensor_node.py
   src/badge_sensor_node.py
+  src/test_node/test_pub_badge.py
+  src/test_node/test_pub_dht11.py
+  src/test_node/test_pub_micro.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
