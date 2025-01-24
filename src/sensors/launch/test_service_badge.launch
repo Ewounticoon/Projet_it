@@ -1,0 +1,14 @@
+<launch>
+    <!-- Lancer le noeud RFID -->
+    <node pkg="sensors" type="test_pub_badge.py" name="test_pub_badge" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
+
+    <!-- Lancer le noeud Database RFID -->
+    <node pkg="badge_rfid" type="ajout_badge.py" name="ajout_badge" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
+
+</launch>
