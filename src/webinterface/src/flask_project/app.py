@@ -1,41 +1,46 @@
 #!/usr/bin/env python
 
 from flask import Flask, render_template, request, redirect, url_for
-import mysql.connector
 import rospy
-from my_package.srv import UserInfo
+from badge_rfid.srv import ajout_badge
 
 app = Flask(__name__)
 
-def send_user_info(first_name, last_name, age, email, password, job_title):
+# Fonction pour envoyer les informations au service ROS
+def send_user_info(nom, mdp, age, email, password, job_title):
     rospy.wait_for_service('user_info_service')
     try:
-        user_info_service = rospy.ServiceProxy('user_info_service', UserInfo)
-        response = user_info_service(first_name, last_name, age, email, password, job_title)
+        user_info_service = rospy.ServiceProxy('user_info_service', ajout_badge)
+        response = user_info_service(nom, mdp, age, email, password, job_title)
         rospy.loginfo(f"Service response: success = {response.success}")
     except rospy.ServiceException as e:
         rospy.logerr(f"Service call failed: {e}")
 
-def main():
-    rospy.init_node('user_info_client')
-    send_user_info("John", "Doe", 30, "john.doe@example.com", "password123", "Software Engineer")
-
-
-# Route formulaire_badge
+# Initialisation de ROS dans le contexte de Flask
+def init_ros():
+    rospy.init_node('user_info_client', anonymous=True)
 
 @app.route('/')
-
 def formulaire_badge():
-
     return render_template('formulaire_badge.html')
 
 @app.route('/traitement', methods=['POST'])
 def traitement():
     donnee = request.form
     nom = donnee.get('nom')
-    mdp = donnee.get('mdp') 
-    print(nom, mdp)
-    return "Traitement de données", 200
+    mdp = donnee.get('mdp')
+    age = donnee.get('age')  # Assurez-vous que ces champs existent dans le formulaire
+    email = donnee.get('email')
+    job_title = donnee.get('job_title')  # Assurez-vous d'utiliser "job_title" pour correspondre à l'attribut HTML
+    
+    # Afficher les valeurs reçues
+    print(nom, mdp, age, email, job_title)
+
+    # Appeler la fonction d'envoi des données au service ROS
+    send_user_info(nom, mdp, age, email, mdp, job_title)  # Remplace "password123" par le mot de passe réel
+
+    return "Traitement des données effectué", 200
 
 if __name__ == '__main__':
+    init_ros()  # Initialiser ROS avant de lancer Flask
     app.run(debug=True)
