@@ -58,7 +58,7 @@ def ajout_badge_base(req):
         cursor.execute('''
             INSERT INTO mesures (numBadge, prenom, nom, age, email, password, poste) 
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (num_badge, req.prenom, req.nom, req.age, req.email, req.poste ))
+        ''', (num_badge, req.prenom, req.nom, req.age, req.email,req.password, req.poste ))
         rospy.loginfo(f"Badge {num_badge} enregistré avec les différentes infos")  # DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de l'insertion des données : {e}")
