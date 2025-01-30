@@ -6,13 +6,14 @@ import sqlite3
 import os
 from datetime import datetime
 
-# Chemin de la base de données
-db_path = os.path.expanduser('~/ros_workspace/src/database/src/RFID_mesures.db')
+# Chemins des bases de données
+db_path_mesures = os.path.expanduser('~/ros_workspace/src/database/src/RFID_mesures.db')
+db_path_infos = os.path.expanduser('~/ros_workspace/src/database/src/RFID_infos.db')
 
-# Création de la base de données
+# Création de la base de données des mesures
 def create_database_mesure():
     """Création de la table pour les mesures RFID."""
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path_mesures)
     cursor = conn.cursor()
     try:
         cursor.execute('''
@@ -30,22 +31,40 @@ def create_database_mesure():
         conn.commit()
         conn.close()
 
+# Vérification si un badge est présent dans la base de données infos
+def check_badge_in_infos(num_badge):
+    """Vérifie si un numéro de badge est dans la base de données infos."""
+    conn = sqlite3.connect(db_path_infos)
+    cursor = conn.cursor()
+    try:
+        cursor.execute('SELECT * FROM infos WHERE numBadge = ?', (num_badge,))
+        result = cursor.fetchone()
+        return result is not None
+    except sqlite3.Error as e:
+        rospy.logerr(f"Erreur lors de la vérification du badge : {e}")
+        return False
+    finally:
+        conn.close()
+
 # Fonction de callback pour les messages du topic
 def rfid_callback(msg):
     """Callback appelée à la réception d'un message sur le topic."""
     num_badge = msg.data  # Supposant que msg.data contient le numéro du badge
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    register_value = "NO" #A MODIFIER, LIRE DANS L'AUTRE DB
+    
+    # Vérifier si le badge est connu
+    is_known = check_badge_in_infos(num_badge)
+    register_value = "YES" if is_known else "NO"
 
-    # Enregistrement dans la base de données
-    conn = sqlite3.connect(db_path)
+    # Enregistrement dans la base de données des mesures
+    conn = sqlite3.connect(db_path_mesures)
     cursor = conn.cursor()
     try:
         cursor.execute('''
             INSERT INTO mesures (date_time, numBadge, register) 
             VALUES (?, ?, ?)
         ''', (timestamp, num_badge, register_value))
-        rospy.loginfo(f"Badge {num_badge} enregistré à {timestamp}")  # DEBUG
+        rospy.loginfo(f"Badge {num_badge} lu à {timestamp}, statut d'enregistrement : {register_value} ")  # DEBUG
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de l'insertion des données : {e}")
     finally:
