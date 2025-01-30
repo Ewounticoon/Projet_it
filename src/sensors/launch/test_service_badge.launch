@@ -11,4 +11,8 @@
         <!-- Exemple : <param name="param_name" value="param_value" /> -->
     </node>
 
+    <node pkg="webinterface" type="app.py" name="app" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
 </launch>
