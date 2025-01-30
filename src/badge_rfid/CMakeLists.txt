@@ -58,6 +58,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
    FILES
    ajout_badge.srv
+   suppr_badge.srv
 )
 
 ## Generate actions in the 'action' folder

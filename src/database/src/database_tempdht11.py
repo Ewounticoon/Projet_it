@@ -44,7 +44,11 @@ def insert_measurement(temperature):
 
 # Callback pour traiter les messages du topic
 def temperature_callback(msg):
+<<<<<<< HEAD
     temperature = msg.data.temperature  # La température est stockée dans msg.data
+=======
+    temperature = msg.temperature  # La température est stockée dans msg.data
+>>>>>>> feature/ros-nodes
     rospy.loginfo(f"Température reçue : {temperature}°C")
     insert_measurement(temperature)  # Enregistrer dans la base de données
 
@@ -54,7 +58,11 @@ def temperature_listener():
     rospy.init_node('temperature_listener', anonymous=True)
     
     # S'abonner au topic "topic_tempDHT11" pour récupérer les données de température /!\ Penser a modif en cas de chgnt de nom
+<<<<<<< HEAD
     rospy.Subscriber('/topic_dht11', Float32, temperature_callback)
+=======
+    rospy.Subscriber('/topic_dht11', dht11, temperature_callback)
+>>>>>>> feature/ros-nodes
     
     # Créer la base de données si elle n'existe pas
     create_database()
