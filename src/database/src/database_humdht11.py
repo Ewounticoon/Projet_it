@@ -6,7 +6,7 @@
 import sqlite3
 import os
 import rospy  # ROS Python
-from std_msgs.msg import Float32  # Message ROS pour la température (type Float32)
+from sensors.msg import dht11  # Message ROS pour la température (type Float32)
 from datetime import datetime
 
 db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_humidite.db') #chemin d'acces
@@ -54,7 +54,7 @@ def hum_listener():
     rospy.init_node('humidite_listener', anonymous=True)
     
     # S'abonner au topic "topic_tempDHT11" pour récupérer les données de température /!\ Penser a modif en cas de chgnt de nom
-    rospy.Subscriber('topic_humDHT11', Float32, hum_callback)
+    rospy.Subscriber('/topic_dht11', Float32, hum_callback)
     
     # Créer la base de données si elle n'existe pas
     create_database()
