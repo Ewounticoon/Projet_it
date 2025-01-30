@@ -44,7 +44,7 @@ def insert_measurement(humidite):
 
 # Callback pour traiter les messages du topic
 def hum_callback(msg):
-    humidite = msg.data  # La température est stockée dans msg.data
+    humidite = msg.humidity  # La température est stockée dans msg.data
     rospy.loginfo(f"humidite reçue : {humidite} %")
     insert_measurement(humidite)  # Enregistrer dans la base de données
 
@@ -54,7 +54,7 @@ def hum_listener():
     rospy.init_node('humidite_listener', anonymous=True)
     
     # S'abonner au topic "topic_tempDHT11" pour récupérer les données de température /!\ Penser a modif en cas de chgnt de nom
-    rospy.Subscriber('/topic_dht11', Float32, hum_callback)
+    rospy.Subscriber('/topic_dht11', dht11, hum_callback)
     
     # Créer la base de données si elle n'existe pas
     create_database()

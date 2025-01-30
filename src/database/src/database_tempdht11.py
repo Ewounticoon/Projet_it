@@ -6,7 +6,7 @@
 import sqlite3
 import os
 import rospy  # ROS Python
-from std_msgs.msg import Float32  # Message ROS pour la température (type Float32)
+from sensors.msg import dht11  # Message ROS pour la température (type Float32)
 from datetime import datetime
 
 db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_temperature.db') #chemin d'acces
@@ -44,7 +44,7 @@ def insert_measurement(temperature):
 
 # Callback pour traiter les messages du topic
 def temperature_callback(msg):
-    temperature = msg.data  # La température est stockée dans msg.data
+    temperature = msg.temperature  # La température est stockée dans msg.data
     rospy.loginfo(f"Température reçue : {temperature}°C")
     insert_measurement(temperature)  # Enregistrer dans la base de données
 
@@ -54,7 +54,7 @@ def temperature_listener():
     rospy.init_node('temperature_listener', anonymous=True)
     
     # S'abonner au topic "topic_tempDHT11" pour récupérer les données de température /!\ Penser a modif en cas de chgnt de nom
-    rospy.Subscriber('topic_tempDHT11', Float32, temperature_callback)
+    rospy.Subscriber('/topic_dht11', dht11, temperature_callback)
     
     # Créer la base de données si elle n'existe pas
     create_database()
