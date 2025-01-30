@@ -38,7 +38,7 @@ def traitement():
     print(prenom, nom, age, email, mdp, job_title)
 
     # Appeler la fonction d'envoi des données au service ROS
-    send_user_info(prenom, nom, age, email, mdp, job_title)  # Remplace "password123" par le mot de passe réel
+    send_user_info(prenom, nom, int(age), email, mdp, job_title)  # Remplace "password123" par le mot de passe réel
 
     return "Traitement des données effectué", 200
 
