@@ -1,8 +1,7 @@
 build/
 devel/
-logs/
-log/
 install/
+log/
+logs/
 *.swp
-.DS_Store
-
+*.DS_Store

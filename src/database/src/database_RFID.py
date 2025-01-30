@@ -35,7 +35,7 @@ def rfid_callback(msg):
     """Callback appelée à la réception d'un message sur le topic."""
     num_badge = msg.data  # Supposant que msg.data contient le numéro du badge
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    register_value = "NO"
+    register_value = "NO" #A MODIFIER, LIRE DANS L'AUTRE DB
 
     # Enregistrement dans la base de données
     conn = sqlite3.connect(db_path)
