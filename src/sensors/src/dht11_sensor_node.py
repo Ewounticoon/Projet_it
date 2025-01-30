@@ -14,7 +14,8 @@ class Node_dht11:
 
         # Initialisation des publisher (nom du topic, type ,taille)
         self.pub=rospy.Publisher('/topic_dht11', dht11, queue_size=10)
-
+        self.pub_temp = rospy.Publisher('/topic_tempDHT11', Float32, queue_size=10)
+        self.pub_hum = rospy.Publisher('/topic_humDHT11', Float32, queue_size=10)
 
         # Lancer une fonction à intervalle régulier :
         rospy.Timer(rospy.Duration(5), self.pub_donne_dht11)
@@ -28,15 +29,10 @@ class Node_dht11:
         
         if humidity is not None and temperature is not None:
             # Créer un message Float32 pour la température et l'humidité
-<<<<<<< HEAD
-
-            msg_dht11=dht11()
-=======
 
             msg_dht11=dht11()
 
 
->>>>>>> feature/ros-nodes
 
             msg_dht11.temperature=temperature
             msg_dht11.humidity=humidity

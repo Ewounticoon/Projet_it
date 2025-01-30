@@ -1,54 +1,17 @@
 <launch>
-<<<<<<< HEAD
-    <!-- Lancer l'interface WEB' -->
-=======
->>>>>>> feature/ros-nodes
     <node pkg="webinterface" type="app.py" name="app" output="screen">
         <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
         <!-- Exemple : <param name="param_name" value="param_value" /> -->
     </node>
-<<<<<<< HEAD
-    <!-- Lancer le noeud RFID -->
-    <node pkg="sensors" type="test_pub_badge.py" name="test_pub_badge" output="screen">
-        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
-        <!-- Exemple : <param name="param_name" value="param_value" /> -->
-=======
 
                         <!-- Noeuds RFID -->
 
     <!-- Lancer le noeud RFID -->
     <node pkg="sensors" type="badge_sensor_node.py" name="badge_sensor_node" output="screen">
->>>>>>> feature/ros-nodes
     </node>
 
     <!-- Lancer le noeud Database RFID -->
     <node pkg="badge_rfid" type="ajout_badge.py" name="ajout_badge" output="screen">
-<<<<<<< HEAD
-        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
-        <!-- Exemple : <param name="param_name" value="param_value" /> -->
-    </node>
-
-    <!-- Lancer le noeud historique RFID passé -->
-    <node pkg="database" type="database_RFID.py" name="database_RFID" output="screen">
-        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
-        <!-- Exemple : <param name="param_name" value="param_value" /> -->
-    </node>
-
-    <!-- Lancer le noeud DHT11 Sensor -->
-    <node pkg="sensors" type="dht11_sensor_node.py" name="dht11_sensor_node" output="screen">
-        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
-        <!-- Exemple : <param name="param_name" value="param_value" /> -->
-    </node>
-
-    <!-- Lancer le noeud Database Temp DHT11 -->
-    <node pkg="database" type="database_tempdht11.py" name="database_tempdht11" output="screen">
-        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
-        <!-- Exemple : <param name="param_name" value="param_value" /> -->
-    </node>
-    <!-- Lancer le noeud Database humidite DHT11 -->
-    <node pkg="database" type="database_humdht11.py" name="database_humdht11" output="screen">
-    </node>
-=======
     </node>
 
         <!-- Lancer le noeud Database Historique RFID -->
@@ -79,5 +42,4 @@
     <node pkg="database" type="database_tempdht11.py" name="database_tempdht11" output="screen">
     </node>
 
->>>>>>> feature/ros-nodes
 </launch>
