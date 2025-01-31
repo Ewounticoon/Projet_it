@@ -48,4 +48,3 @@ if __name__ == '__main__':
     init_ros()  # Initialiser ROS avant de lancer Flask
     basedir = os.path.abspath(os.path.dirname(__file__))
     app.run(host="0.0.0.0", port=5000, ssl_context=(os.path.join(basedir, 'server.crt'), os.path.join(basedir, 'server.key')))
-
