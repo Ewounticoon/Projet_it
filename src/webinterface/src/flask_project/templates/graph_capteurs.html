@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Entreprise ENPIWEN</title>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/style.css">
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Importer jQuery depuis Internet -->
+    </head>
+    <body>
+
+        <h1>Entreprise ENPIWEN</h1>
+
+        <script>
+            var delay = 11; // Rafraîchissement toutes les 11 secondes
+        
+            function reloadGraphs() {
+                $('#graph-container').load('/reload #graph-container > *'); // Charge uniquement la partie graphique
+            }
+        
+            if (document.cookie.indexOf('auto_reload=1') !== -1) {
+                var auto_reload = setInterval(reloadGraphs, delay * 1000);
+            }
+        
+            $(document).ready(function () {
+                $('#dev_button_start').click(function () {
+                    document.cookie = 'auto_reload=1';
+                    location.reload();  // Recharge la page pour activer l'auto-refresh
+                });
+        
+                $('#dev_button_stop').click(function () {
+                    document.cookie = 'auto_reload=0';
+                    clearInterval(auto_reload);  // Arrête l'auto-refresh
+                });
+            });
+        </script>
+
+        <!-- Boutons pour contrôler l'actualisation -->
+        <button id="dev_button_start">Démarrer l'actualisation</button>
+        <button id="dev_button_stop">Arrêter l'actualisation</button>
+
+        <fieldset>
+            <legend>Quel(s) graphique(s) voulez-vous réinitialiser ? (Faites votre choix plus cliquer sur "Valider")</legend>
+            <input id="température" type="checkbox" name="graphique" value="graph_1" checked> <label for="température">Variation de la température en fonction du temps</label>
+            <input id="humidité" type="checkbox" name="graphique" value="graph_2"> <label for="humidité">Variation de l'humidité en fonction du temps</label>
+            <input id="son" type="checkbox" name="graphique" value="graph_3"> <label for="son">Variation des décibels en fonction du temps</label>
+          </fieldset>
+
+    </body>
+</html>

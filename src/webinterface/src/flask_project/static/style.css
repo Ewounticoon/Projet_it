@@ -33,7 +33,7 @@ fieldset {
     vertical-align: middle;
   }
   
-input[type="submit"] {
+input[type="submit"], script, button {
     display: block;
     width: 60%;
     margin: 1em auto;
@@ -60,3 +60,4 @@ input, textarea {
     border: 1px solid #0a0a23;
     color: #ffffff;
   }
+

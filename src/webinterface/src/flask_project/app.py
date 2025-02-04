@@ -10,19 +10,24 @@ app = Flask(__name__)
 def send_user_info(prenom, nom, age, email, mdp, job_title):
     rospy.wait_for_service('ajout_badge')
     try:
-        user_info_service = rospy.ServiceProxy('ajout_badge', ajout_badge)
-        response = user_info_service(prenom, nom, age, email, mdp, job_title)
+        ajout_badge = rospy.ServiceProxy('ajout_badge', ajout_badge)
+        response = ajout_badge(prenom, nom, age, email, mdp, job_title)
         rospy.loginfo(f"Service response: success = {response.success}")
     except rospy.ServiceException as e:
         rospy.logerr(f"Service call failed: {e}")
 
 # Initialisation de ROS dans le contexte de Flask
 def init_ros():
-    rospy.init_node('user_info_client', anonymous=True)
+    rospy.init_node('ajout_badge', anonymous=True)
 
 @app.route('/')
 def formulaire_badge():
     return render_template('formulaire_badge.html')
+'''
+
+@app.route('/')
+def graph_capteurs():
+    return render_template('graph_capteurs.html')'''
 
 @app.route('/traitement', methods=['POST'])
 def traitement():
@@ -44,4 +49,4 @@ def traitement():
 
 if __name__ == '__main__':
     init_ros()  # Initialiser ROS avant de lancer Flask
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
