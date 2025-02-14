@@ -33,6 +33,7 @@ catkin_install_python(PROGRAMS
   src/test_node/test_pub_badge.py
   src/test_node/test_pub_dht11.py
   src/test_node/test_pub_micro.py
+  src/test_unit/test_node_dht11.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

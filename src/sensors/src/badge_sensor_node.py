@@ -23,7 +23,9 @@ class Node_RFID:
         # Affichage dans le terminal pour l'utilisateur
         rospy.loginfo("En attente d'un badge (pour quitter, Ctrl + c)")
 
-    def read_rfid(self):
+    def read_rfid(self, max_iterations=None):
+        iteration_count = 0
+
         # Boucle infinie pour lire les tags RFID
         while not rospy.is_shutdown():
             self.rc522.wait_for_tag()  # Attente qu'une puce RFID soit détectée
@@ -45,6 +47,11 @@ class Node_RFID:
                     # Attente de 1 seconde pour éviter une lecture rapide en boucle
                     time.sleep(1)
 
+
+            if max_iterations is not None:
+                iteration_count += 1
+                if iteration_count >= max_iterations:
+                    break
 def main():
     # Initialise le noeud ROS
     rospy.init_node('node_rfid', anonymous=True)
