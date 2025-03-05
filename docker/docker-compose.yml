@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  industrial_it:
+    build: .
+    container_name: ros_noetic_projetIT
+    privileged: true
+    devices:
+      - "/dev/gpiomem:/dev/gpiomem"
+      - "/dev/mem:/dev/mem"
+    volumes:
+      - ../:/root/Projet_it  # Monte ton projet dans le conteneur
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+    
+    entrypoint: ["/root/Projet_it/docker/entrypoint.sh"]
+
+    command: /bin/bash
