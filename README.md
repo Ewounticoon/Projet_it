@@ -67,7 +67,7 @@ An interactive web interface allows users to:
 4. **Access the Web Interface**:
    Open a browser and go to:
    ```
-   http://localhost:5000
+   https://localhost:5000
    ```
 
 ## Authors
@@ -144,7 +144,7 @@ Une interface Web interactive permet :
 4. **Accéder à l'interface web**:
    Ouvrez un navigateur et allez à l'adresse suivante :
    ```
-   http://localhost:5000
+   https://localhost:5000
    ```
 
 ## Auteurs
