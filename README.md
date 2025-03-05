@@ -58,6 +58,9 @@ An interactive web interface allows users to:
 
 3. **Start the system**:
    ```bash
+   cd ~/Projet_it
+   catkin_make
+   source devel/setup.bash
    roslaunch industrial_it system.launch
    ```
 
@@ -132,6 +135,9 @@ Une interface Web interactive permet :
 
 3. **Démarrer le système**:
    ```bash
+   cd ~/Projet_it
+   catkin_make
+   source devel/setup.bash
    roslaunch industrial_it system.launch
    ```
 
