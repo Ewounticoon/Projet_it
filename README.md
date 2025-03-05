@@ -45,6 +45,7 @@ An interactive web interface allows users to:
 2. **Build the docker**:
    ```bash
    cd docker
+   chmod +x entrypoint.sh
    docker-compose up -d --build
    docker exec -it ros_noetic_projetIT bash
    ```
@@ -118,6 +119,7 @@ Une interface Web interactive permet :
 2. **Construire le Docker**:
    ```bash
    cd docker
+   chmod +x entrypoint.sh
    docker-compose up -d --build
    docker exec -it ros_noetic_projetIT bash
    ```
