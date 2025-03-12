@@ -12,7 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  sensors
 )
 
 ## System dependencies are found with CMake's conventions
@@ -58,7 +57,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-    suppr_donne_capt.srv
+   suppr_donne_capt.srv
  )
 
 ## Generate actions in the 'action' folder

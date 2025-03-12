@@ -9,7 +9,7 @@ from badge_rfid.srv import ajout_badge, ajout_badgeResponse
 import bcrypt
 
 # Chemin de la base de données
-db_path = os.path.expanduser('~/Projet_it/src/database/src/RFID_infos.db')
+db_path = os.path.expanduser('~/ros_workspace/src/database/src/RFID_infos.db')
 
 # Variable globale pour stocker le numéro de badge
 global_badge = None
