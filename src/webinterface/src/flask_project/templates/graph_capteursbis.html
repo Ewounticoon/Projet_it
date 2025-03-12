@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Entreprise ENPIWEN</title>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/style.css">
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Importer jQuery depuis Internet -->
+        <script>
+            var delay = 11; // Rafraîchissement toutes les 11 secondes
+        
+            function reloadGraphs() {
+                $('#graph-container').load('/reload #graph-container > *'); // Charge uniquement la partie graphique
+            }
+        
+            if (document.cookie.indexOf('auto_reload=1') !== -1) {
+                var auto_reload = setInterval(reloadGraphs, delay * 1000);
+            }
+        
+            $(document).ready(function () {
+                $('#dev_button_start').click(function () {
+                    document.cookie = 'auto_reload=1';
+                    location.reload();  // Recharge la page pour activer l'auto-refresh
+                });
+        
+                $('#dev_button_stop').click(function () {
+                    document.cookie = 'auto_reload=0';
+                    clearInterval(auto_reload);  // Arrête l'auto-refresh
+                });
+            });
+        </script>
+    </head>
+    <body>
+        
+        <h1>Entreprise ENPIWEN</h1>
+        <form method="POST" action="{{ url_for('page_accueil') }}">
+        <br>
+        <button id="dev_button_start" type="button">Démarrer l'actualisation</button>
+        <button id="dev_button_stop" type="button">Arrêter l'actualisation</button>
+        <br>
+        <fieldset>
+            <legend>Quel(s) graphique(s) voulez-vous réinitialiser ? (Faites votre choix plus cliquer sur "Valider")</legend>
+            <label for="température"> <input id="température" type="checkbox" name="graphique" value="graph_1" class="inline" checked> Variation de la température en fonction du temps </label>
+            <label for="humidité"> <input id="humidité" type="checkbox" name="graphique" value="graph_2" class="inline"> Variation de l'humidité en fonction du temps </label>
+            <label for="son"> <input id="son" type="checkbox" name="graphique" value="graph_3" class="inline"> Variation des décibels en fonction du temps </label>
+          </fieldset>
+        </form>
+    </body>
+</html>
