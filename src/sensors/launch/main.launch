@@ -14,6 +14,9 @@
     <node pkg="badge_rfid" type="ajout_badge.py" name="ajout_badge" output="screen">
     </node>
 
+    <node pkg="badge_rfid" type="delete_badge.py" name="delete_badge" output="screen">
+    </node>
+
         <!-- Lancer le noeud Database Historique RFID -->
     <node pkg="database" type="database_RFID.py" name="database_RFID" output="screen">
     </node>

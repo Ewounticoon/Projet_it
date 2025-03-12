@@ -4,8 +4,9 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
 import os
 import rospy
-from badge_rfid.srv import ajout_badge
+from badge_rfid.srv import ajout_badge, suppr_badge
 from std_msgs.msg import Float32
+from sensors.msg import dht11
 
 app = Flask(__name__)
 
@@ -21,11 +22,11 @@ latest_volume = 0.0
 # Callbacks ROS pour mettre à jour les valeurs
 def temp_callback(msg):
     global latest_temperature
-    latest_temperature = msg.data
+    latest_temperature = msg.temperature
 
 def hum_callback(msg):
     global latest_humidity
-    latest_humidity = msg.data
+    latest_humidity = msg.humidity
 
 def volume_callback(msg):
     global latest_volume
@@ -34,9 +35,24 @@ def volume_callback(msg):
 # Initialisation de ROS dans le contexte de Flask
 def init_ros():
     rospy.init_node('flask_node', anonymous=True)
-    rospy.Subscriber('/topic_tempDHT11', Float32, temp_callback)
-    rospy.Subscriber('/topic_humDHT11', Float32, hum_callback)
+    rospy.Subscriber('/topic_dht11', dht11, temp_callback)
+    rospy.Subscriber('/topic_dht11', dht11, hum_callback)
     rospy.Subscriber('/topic_micro', Float32, volume_callback)
+# Service ROS pour ajouter un badge
+def del_badge_serv():
+
+    rospy.wait_for_service('del_badge')
+    rospy.loginfo("Request Del badge")
+
+    try:
+        del_badge_service = rospy.ServiceProxy('del_badge', suppr_badge)
+        response = del_badge_service(True)
+        rospy.loginfo(f"Service response: success = {response.validation}")
+        return response.validation
+    except rospy.ServiceException as e:
+        rospy.logerr(f"Service call failed: {e}")
+        return False
+
 
 # Service ROS pour ajouter un badge
 def send_user_info(prenom, nom, age, email, mdp, job_title):
@@ -54,7 +70,7 @@ def send_user_info(prenom, nom, age, email, mdp, job_title):
 #   SECTION BASE DE DONNÉES    #
 # ============================ #
 
-DB_PATH = "/Projet_it/src/database/src"
+DB_PATH = "~/ros_workspace/src/database/src/"
 
 def get_last_10_values(db_name, column_name):
     """ Récupère les 10 dernières valeurs d'une colonne d'une base SQLite """
@@ -110,6 +126,7 @@ def formulaire_badge():
 @app.route('/page_validation')
 def page_validation():
     """ Page de validation avant suppression d'un badge """
+    del_badge_serv()
     return render_template('page_validation.html')
 
 @app.route('/traitement', methods=['POST'])
@@ -135,7 +152,6 @@ def traitement():
 # ================================ #
 #     ROUTES POUR LES DONNÉES      #
 # ================================ #
-
 @app.route('/data')
 def get_sensor_data():
     """ Renvoie les valeurs en direct des capteurs ROS """
@@ -145,7 +161,7 @@ def get_sensor_data():
         "volume": latest_volume
     })
 
-@app.route('/get_data')
+@app.route('/get_data') # On triche tkt
 def get_database_data():
     """ Renvoie les 10 dernières valeurs des bases de données SQLite """
     temperature = get_last_10_values("dht11_temperature.db", "temperature")
