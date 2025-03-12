@@ -81,7 +81,7 @@ def page_accueil():
     """ Page d'accueil principale """
     return render_template('page_accueil.html')
 
-@app.route('/graph_capteurs')
+@app.route('/graph_capteurs', methods=['GET', 'POST'])
 def graph_capteurs():
     """ Page affichant les graphiques des capteurs """
     return render_template('graph_capteurs.html')
