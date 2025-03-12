@@ -81,12 +81,12 @@
             }
     
             // Actualisation toutes les 5 secondes
-            var interval = setInterval(updateGraphs, 5000);
+            var interval = setInterval(updateGraphs, 2000);
     
             // Boutons de démarrage et d'arrêt
             $("#dev_button_start").click(function () {
                 clearInterval(interval);
-                interval = setInterval(updateGraphs, 5000);
+                interval = setInterval(updateGraphs, 2000);
             });
     
             $("#dev_button_stop").click(function () {
