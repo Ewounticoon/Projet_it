@@ -1,51 +1,127 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <title>Entreprise ENPIWEN</title>
-        <meta charset="utf-8"></meta>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/static/style.css">
+<head>
+    <title>Entreprise ENPIWEN</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Importer jQuery depuis Internet -->
-    </head>
-    <body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js pour les graphiques -->
 
-        <h1>Entreprise ENPIWEN</h1>
+    <style>
+        #graph-container {
+            display: flex;
+            flex-direction: column; /* Graphiques en colonne */
+            align-items: center; /* Centrage horizontal */
+            gap: 20px; /* Espace entre les graphiques */
+        }
 
-        <script>
-            var delay = 11; // Rafraîchissement toutes les 11 secondes
-        
-            function reloadGraphs() {
-                $('#graph-container').load('/reload #graph-container > *'); // Charge uniquement la partie graphique
-            }
-        
-            if (document.cookie.indexOf('auto_reload=1') !== -1) {
-                var auto_reload = setInterval(reloadGraphs, delay * 1000);
-            }
-        
-            $(document).ready(function () {
-                $('#dev_button_start').click(function () {
-                    document.cookie = 'auto_reload=1';
-                    location.reload();  // Recharge la page pour activer l'auto-refresh
-                });
-        
-                $('#dev_button_stop').click(function () {
-                    document.cookie = 'auto_reload=0';
-                    clearInterval(auto_reload);  // Arrête l'auto-refresh
-                });
+        .graph-box {
+            width: 70%; /* Taille plus grande */
+            max-width: 600px;
+            padding: 15px;
+            border: 1px solid #ccc; /* Bordure pour séparation */
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important; /* Taille augmentée */
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var temperatureChart = new Chart(document.getElementById('temperatureChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Température', data: [], borderColor: 'red', fill: false }] }
             });
-        </script>
-
-        <!-- Boutons pour contrôler l'actualisation -->
-        <button id="dev_button_start">Démarrer l'actualisation</button>
-        <button id="dev_button_stop">Arrêter l'actualisation</button>
-
+    
+            var humiditeChart = new Chart(document.getElementById('humiditeChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Humidité', data: [], borderColor: 'blue', fill: false }] }
+            });
+    
+            var volumeChart = new Chart(document.getElementById('volumeChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Volume sonore', data: [], borderColor: 'green', fill: false }] }
+            });
+    
+            function updateGraphs() {
+                $.getJSON('/data', function(data) {
+                    var now = new Date().toLocaleTimeString();
+    
+                    // Ajout des nouvelles données
+                    temperatureChart.data.labels.push(now);
+                    temperatureChart.data.datasets[0].data.push(data.temperature);
+                    if (temperatureChart.data.labels.length > 10) {
+                        temperatureChart.data.labels.shift();
+                        temperatureChart.data.datasets[0].data.shift();
+                    }
+                    temperatureChart.update();
+    
+                    humiditeChart.data.labels.push(now);
+                    humiditeChart.data.datasets[0].data.push(data.humidity);
+                    if (humiditeChart.data.labels.length > 10) {
+                        humiditeChart.data.labels.shift();
+                        humiditeChart.data.datasets[0].data.shift();
+                    }
+                    humiditeChart.update();
+    
+                    volumeChart.data.labels.push(now);
+                    volumeChart.data.datasets[0].data.push(data.volume);
+                    if (volumeChart.data.labels.length > 10) {
+                        volumeChart.data.labels.shift();
+                        volumeChart.data.datasets[0].data.shift();
+                    }
+                    volumeChart.update();
+                });
+            }
+    
+            // Actualisation toutes les 5 secondes
+            var interval = setInterval(updateGraphs, 5000);
+    
+            // Boutons de démarrage et d'arrêt
+            $("#dev_button_start").click(function () {
+                clearInterval(interval);
+                interval = setInterval(updateGraphs, 5000);
+            });
+    
+            $("#dev_button_stop").click(function () {
+                clearInterval(interval);
+            });
+        });
+    </script>    
+</head>
+<body>
+    <h1>Entreprise ENPIWEN</h1>
+    
+    <form method="POST" action="{{ url_for('page_accueil') }}">
+        <br>
+        <button id="dev_button_start" type="button">Démarrer l'actualisation</button>
+        <button id="dev_button_stop" type="button">Arrêter l'actualisation</button>
+        <br>
+        
         <fieldset>
-            <legend>Quel(s) graphique(s) voulez-vous réinitialiser ? (Faites votre choix plus cliquer sur "Valider")</legend>
-            <input id="température" type="checkbox" name="graphique" value="graph_1" checked> <label for="température">Variation de la température en fonction du temps</label>
-            <input id="humidité" type="checkbox" name="graphique" value="graph_2"> <label for="humidité">Variation de l'humidité en fonction du temps</label>
-            <input id="son" type="checkbox" name="graphique" value="graph_3"> <label for="son">Variation des décibels en fonction du temps</label>
-          </fieldset>
+            <legend>Quel(s) graphique(s) voulez-vous réinitialiser ?</legend>
+            <label for="température"> <input id="température" type="checkbox" name="graphique" value="graph_1" class="inline" checked> Température </label>
+            <label for="humidité"> <input id="humidité" type="checkbox" name="graphique" value="graph_2" class="inline"> Humidité </label>
+            <label for="son"> <input id="son" type="checkbox" name="graphique" value="graph_3" class="inline"> Son </label>
+        </fieldset>
+    </form>
 
-    </body>
+    <div id="graph-container">
+        <div class="graph-box">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="graph-box">
+            <canvas id="humiditeChart"></canvas>
+        </div>
+        <div class="graph-box">
+            <canvas id="volumeChart"></canvas>
+        </div>
+    </div>  
+</body>
 </html>

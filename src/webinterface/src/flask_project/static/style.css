@@ -41,6 +41,7 @@ input[type="submit"], script, button {
     font-size: 1.1rem;
     background-color: #3b3b4f;
     border-color: white;
+    color: white;
     min-width: 300px;
   }
 
@@ -61,3 +62,19 @@ input, textarea {
     color: #ffffff;
   }
 
+  #graph-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.graph-box {
+    width: 45%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
