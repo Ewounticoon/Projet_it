@@ -7,8 +7,8 @@ import os
 from datetime import datetime
 
 # Chemins des bases de données
-db_path_mesures = os.path.expanduser('~/ros_workspace/src/database/src/RFID_mesures.db')
-db_path_infos = os.path.expanduser('~/ros_workspace/src/database/src/RFID_infos.db')
+db_path_mesures = os.path.expanduser('~/ros_workspace/src/database/database/RFID_mesures.db')
+db_path_infos = os.path.expanduser('~/ros_workspace/src/database/database/RFID_infos.db')
 
 # Création de la base de données des mesures
 def create_database_mesure():
