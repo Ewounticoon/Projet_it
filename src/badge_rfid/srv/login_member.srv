@@ -1,10 +1,6 @@
-string user
+string username
 ---
 bool success
-string prenom
-string nom
-int32 age 
-string poste
-string mail
+string username
 string password
-
+string role

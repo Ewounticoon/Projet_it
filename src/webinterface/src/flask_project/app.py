@@ -8,6 +8,8 @@ import rospy
 from badge_rfid.srv import ajout_badge, suppr_badge, login_member
 from std_msgs.msg import Float32
 from sensors.msg import dht11
+from werkzeug.security import check_password_hash
+
 
 app = Flask(__name__)
 app.secret_key = 'Enpiwen_mdp'
@@ -22,7 +24,6 @@ login_manager.login_view = 'login'
 
 class User(UserMixin):
     def __init__(self, id, username, password,role):
-        self.id=id
         self.username=username
         self.password=password
         self.role=role
@@ -39,6 +40,25 @@ def load_user(user_id):
     except rospy.ServiceException as e:
         rospy.logerr(f"Service call failed: {e}")
         return False
+    
+
+def authenticate(username, password):
+    """ Vérifie si l'utilisateur existe dans la base de données et si le mot de passe est correct """
+    success, username_data, password_data, role = load_user(username)
+    try: 
+        if success :    
+            if check_password_hash(password_data, password):  # Vérifie le mot de passe haché
+            # Si le mot de passe est correct, renvoie l'objet utilisateur
+                return User(username=username_data, password=password_data, role=role)
+            else:
+                return None  # Mot de passe incorrect
+        else:
+            return None  # Utilisateur non trouvé
+
+    except sqlite3.Error as e:
+        print(f"Erreur SQLite : {e}")
+        return None
+
 
 # ====================== #
 #      SECTION ROS       #
@@ -132,6 +152,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user=authenticate(username,password)
+
         if user:
             login_user(user)
             flash('Connexion reussie')
