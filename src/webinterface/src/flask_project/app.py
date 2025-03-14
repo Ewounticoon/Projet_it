@@ -23,41 +23,45 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 class User(UserMixin):
-    def __init__(self, id, username, password,role):
+    def __init__(self,id, username, password,role):
+        self.id=id
         self.username=username
         self.password=password
         self.role=role
 
 
 @login_manager.user_loader
+@login_manager.user_loader
 def load_user(user_id):
     rospy.wait_for_service('login_serv')
     try:
         login_service = rospy.ServiceProxy('login_serv', login_member)
         response = login_service(user_id)
-        rospy.loginfo(f"Service response: success = {response.success}")
-        return response
+        rospy.loginfo(f"Service response: success = {response.success}, username= {response.username}, psw={response.password}, poste = {response.role}")
+        
+        if response.success:
+            # Créer un objet User avec les données retournées
+            return User(id=response.id, username=response.username, password=response.password, role=response.role)
+        else:
+            return None
     except rospy.ServiceException as e:
         rospy.logerr(f"Service call failed: {e}")
-        return False
+        return None
+
     
 
 def authenticate(username, password):
     """ Vérifie si l'utilisateur existe dans la base de données et si le mot de passe est correct """
-    success, username_data, password_data, role = load_user(username)
-    try: 
-        if success :    
-            if check_password_hash(password_data, password):  # Vérifie le mot de passe haché
+    user = load_user(username)  # Récupère l'objet User
+    
+    if user:
+        if check_password_hash(user.password, password):  # Vérifie le mot de passe haché
             # Si le mot de passe est correct, renvoie l'objet utilisateur
-                return User(username=username_data, password=password_data, role=role)
-            else:
-                return None  # Mot de passe incorrect
+            return user
         else:
-            return None  # Utilisateur non trouvé
-
-    except sqlite3.Error as e:
-        print(f"Erreur SQLite : {e}")
-        return None
+            return None  # Mot de passe incorrect
+    else:
+        return None  # Utilisateur non trouvé
 
 
 # ====================== #
@@ -109,11 +113,11 @@ def del_badge_serv():
 
 
 # Service ROS pour ajouter un badge
-def send_user_info(prenom, nom, age, email, mdp, job_title):
+def send_user_info(prenom, nom, username, age, email, mdp, job_title):
     rospy.wait_for_service('ajout_badge')
     try:
         ajout_badge_service = rospy.ServiceProxy('ajout_badge', ajout_badge)
-        response = ajout_badge_service(prenom, nom, age, email, mdp, job_title)
+        response = ajout_badge_service(prenom, nom, username, age, email, mdp, job_title)
         rospy.loginfo(f"Service response: success = {response.success}")
         return response.success
     except rospy.ServiceException as e:
@@ -145,35 +149,48 @@ def get_last_10_values(db_name, column_name):
 # ========================== #
 #      SECTION ROUTES        #
 # ========================== #
-@app.route('/login',methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     """ Page login """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user=authenticate(username,password)
+        user = authenticate(username, password)
 
         if user:
             login_user(user)
-            flash('Connexion reussie')
-            return redirect(url_for('page_acceuil'))
-        else :
-            flash('Nom d\'utilisateur ou mot de passe incorrecte')
+            flash('Connexion réussie')
+
+            # Rediriger vers la page d'accueil ou la page spécifiée dans 'next'
+            next_page = request.args.get('next')
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for('page_accueil'))  # Redirection vers la page d'accueil principale
+        else:
+            flash('Nom d\'utilisateur ou mot de passe incorrect')
 
     return render_template('login.html')
 
 
-@app.route('/')
+
+
+
+@login_required
+@app.route('/page_accueil')
 def page_accueil():
     """ Page d'accueil principale """
     return render_template('page_accueil.html')
 
 @app.route('/graph_capteurs', methods=['GET', 'POST'])
+@login_required
 def graph_capteurs():
     """ Page affichant les graphiques des capteurs """
     return render_template('graph_capteurs.html')
 
 @app.route('/placez_badge', methods=['GET', 'POST'])
+@login_required
+
 def placez_badge():
     """ Page intermédiaire pour ajouter ou supprimer un badge """
     if request.method == 'POST':
@@ -190,17 +207,20 @@ def placez_badge():
     return render_template('placez_badge.html', action=action)
 
 @app.route('/formulaire_badge')
+@login_required
 def formulaire_badge():
     """ Formulaire pour ajouter un badge """
     return render_template('formulaire_badge.html')
 
 @app.route('/page_validation')
+@login_required
 def page_validation():
     """ Page de validation avant suppression d'un badge """
     del_badge_serv()
     return render_template('page_validation.html')
 
 @app.route('/traitement', methods=['POST'])
+@login_required
 def traitement():
     """ Traitement du formulaire d'ajout de badge """
     donnee = request.form
@@ -225,6 +245,7 @@ def traitement():
 #     ROUTES POUR LES DONNÉES      #
 # ================================ #
 @app.route('/data')
+@login_required
 def get_sensor_data():
     """ Renvoie les valeurs en direct des capteurs ROS """
     return jsonify({
@@ -234,6 +255,7 @@ def get_sensor_data():
     })
 
 @app.route('/get_data') # On triche tkt
+@login_required
 def get_database_data():
     """ Renvoie les 10 dernières valeurs des bases de données SQLite """
     temperature = get_last_10_values("dht11_temperature.db", "temperature")

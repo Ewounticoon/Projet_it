@@ -5,7 +5,7 @@ from std_msgs.msg import Int32
 import sqlite3
 import os
 
-from badge_rfid.srv import login_member, login_memberReponse
+from badge_rfid.srv import login_member, login_memberResponse
 
 # Chemin de la base de données
 db_path = os.path.expanduser('~/ros_workspace/src/database/database/RFID_infos.db')
@@ -16,25 +16,37 @@ def extract_data(req):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     try:
-        
-        cursor.execute('''
-            SELECT mdp, poste FROM infos WHERE user = 'username';
-        ''')
-        data_extracted = cursor.fetchone() #stockage des données dans une variable
+        # Correction : utilisation de la variable username dans la requête SQL
+        cursor.execute('''SELECT id, mdp, poste FROM infos WHERE user = ?;''', (username,))
+        data_extracted = cursor.fetchone()  # Stockage des données dans une variable
 
-        if data_extracted :
-            password, role = data_extracted #separation des infos dans des varaiables distinctes
+        if data_extracted:
+            id, password, role = data_extracted  # Séparation des informations dans des variables distinctes
 
-            rospy.loginfo("Donnees extraites avec succes")
+            rospy.loginfo("Données extraites avec succès")
             success = True
+        else:
+            rospy.logwarn(f"Aucune donnée trouvée pour l'utilisateur {username}")
+            success = False
+            id = None
+            username=None
+            role =None
+            password=None
+
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de l'extraction des données : {e}")
         success = False
+        id = None
+        username=None
+        role =None
+        password=None
+
     finally:
         conn.commit()
         conn.close()
 
-    return login_memberReponse(sucess,username,password,role) #renvoi les resultats pour le service ROS
+    return login_memberResponse(success,id, username, password, role)  # Retour des résultats pour le service ROS
+
 
 
 def listener():

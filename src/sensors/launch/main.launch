@@ -21,6 +21,10 @@
     <node pkg="database" type="database_RFID.py" name="database_RFID" output="screen">
     </node>
 
+        <!-- Lancer le noeud Database navig login -->
+    <node pkg="badge_rfid" type="nav_database_badge.py" name="nav_database_badge" output="screen">
+    </node>
+
                         <!-- Noeuds Micro -->
 
     <!-- Lancer le noeud micro -->

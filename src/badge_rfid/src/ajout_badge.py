@@ -60,10 +60,10 @@ def ajout_badge_base(req):
         rospy.logerr("Aucun badge détecté !")
         return ajout_badgeResponse(False)
 
-    rospy.loginfo(f"Infos utilisateur reçues : {req.prenom} {req.nom},username:{req.username}, Âge: {req.age}, mail: {req.mail}, Role: {req.poste}")
+    rospy.loginfo(f"Infos utilisateur reçues : {req.prenom} {req.nom},username:{req.username}, Âge: {req.age}, mail: {req.mail}, MDP : {req.password}, Role: {req.poste}")
 
     # Suppression du hachage pour éviter l'erreur dans le test
-    hashed_password = generate_password_hash(req.password, method='sha256') # ⚠️ Enlever bcrypt.hashpw pour le test
+    hashed_password = generate_password_hash(req.password, method='pbkdf2:sha256')
 
     # Enregistrement dans la base de données
     conn = sqlite3.connect(db_path)

@@ -40,7 +40,7 @@ class Node_RFID:
                 rospy.logwarn("Erreur lors de la récupération de l'UID du badge RFID")  # ✅ Ajout du log d'erreur
                 if test_mode:
                     return  
-    
+
             rfid_id = int(''.join(map(str, uid)))  # Convertir l'UID en entier
             rospy.loginfo(f"Badge détecté avec l'ID : {rfid_id}")
             self.pub_rfid.publish(rfid_id)
