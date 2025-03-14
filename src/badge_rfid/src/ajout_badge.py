@@ -24,6 +24,7 @@ def create_database_infos():
             CREATE TABLE IF NOT EXISTS infos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 numBadge INTEGER NOT NULL,
+                user TEXT NOT NULL,
                 prenom TEXT NOT NULL,
                 nom TEXT NOT NULL,
                 age INTEGER NOT NULL,
@@ -38,9 +39,9 @@ def create_database_infos():
     finally:
         hashed_password_admin = generate_password_hash("admin", method='pbkdf2:sha256')
         cursor.execute('''
-            INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (999999, "admin", "admin", 99, "admin@admin.com", hashed_password_admin, "admin"))
+            INSERT INTO infos (numBadge,user, prenom, nom, age, mail, mdp, poste)
+            VALUES (?,?, ?, ?, ?, ?, ?, ?)
+        ''', (999999,"admin", "admin", "admin", 99, "admin@admin.com", hashed_password_admin, "admin"))
         conn.commit()
         conn.close()
 
@@ -59,7 +60,7 @@ def ajout_badge_base(req):
         rospy.logerr("Aucun badge détecté !")
         return ajout_badgeResponse(False)
 
-    rospy.loginfo(f"Infos utilisateur reçues : {req.prenom} {req.nom}, Âge: {req.age}, mail: {req.mail}, Role: {req.poste}")
+    rospy.loginfo(f"Infos utilisateur reçues : {req.prenom} {req.nom},username:{req.username}, Âge: {req.age}, mail: {req.mail}, Role: {req.poste}")
 
     # Suppression du hachage pour éviter l'erreur dans le test
     hashed_password = generate_password_hash(req.password, method='sha256') # ⚠️ Enlever bcrypt.hashpw pour le test
@@ -70,9 +71,9 @@ def ajout_badge_base(req):
     try:
         rospy.loginfo("DEBUG: Insertion en cours dans la base de données...")
         cursor.execute('''
-            INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (global_badge, req.prenom, req.nom, req.age, req.mail, hashed_password, req.poste))
+            INSERT INTO infos (numBadge,user, prenom, nom, age, mail, mdp, poste)
+            VALUES (?,?, ?, ?, ?, ?, ?, ?)
+        ''', (global_badge,req.username, req.prenom, req.nom, req.age, req.mail, hashed_password, req.poste))
 
         rospy.loginfo(f"Badge {global_badge} enregistré avec succès")
         success = True
