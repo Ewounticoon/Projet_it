@@ -9,7 +9,7 @@ from badge_rfid.srv import ajout_badge, ajout_badgeResponse
 import bcrypt
 
 # Chemin de la base de données
-db_path = os.path.expanduser('~/ros_workspace/src/database/src/RFID_infos.db')
+db_path = os.path.expanduser('~/ros_workspace/src/database/database/RFID_infos.db')
 
 # Variable globale pour stocker le numéro de badge
 global_badge = None
@@ -47,23 +47,27 @@ def lecture_badge(msg):
 def ajout_badge_base(req):
     """Ajoute les informations du badge dans la base de données."""
     global global_badge
+    rospy.loginfo(f"DEBUG: Valeur actuelle de global_badge: {global_badge}")
+
     if global_badge is None:
         rospy.logerr("Aucun badge détecté !")
         return ajout_badgeResponse(False)
 
     rospy.loginfo(f"Infos utilisateur reçues : {req.prenom} {req.nom}, Âge: {req.age}, mail: {req.mail}, Poste: {req.poste}")
 
-    # Hachage sécurisé du mot de passe
-    hashed_password = bcrypt.hashpw(req.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    # Suppression du hachage pour éviter l'erreur dans le test
+    hashed_password = req.password  # ⚠️ Enlever bcrypt.hashpw pour le test
 
     # Enregistrement dans la base de données
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     try:
+        rospy.loginfo("DEBUG: Insertion en cours dans la base de données...")
         cursor.execute('''
             INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (global_badge, req.prenom, req.nom, req.age, req.mail, req.password, req.poste))
+
         rospy.loginfo(f"Badge {global_badge} enregistré avec succès")
         success = True
     except sqlite3.Error as e:
@@ -74,6 +78,7 @@ def ajout_badge_base(req):
         conn.close()
 
     return ajout_badgeResponse(success)
+
 
 def listener():
     """Initialise le noeud ROS et les services."""

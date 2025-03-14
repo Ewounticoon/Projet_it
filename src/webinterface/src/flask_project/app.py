@@ -40,10 +40,13 @@ def init_ros():
     rospy.Subscriber('/topic_micro', Float32, volume_callback)
 # Service ROS pour ajouter un badge
 def del_badge_serv():
+    try:
+        rospy.wait_for_service('del_badge', timeout=2)  # Timeout de 2 secondes
+    except rospy.ROSException:
+        rospy.logerr("Timeout : Service 'del_badge' non disponible.")
+        return False
 
-    rospy.wait_for_service('del_badge')
     rospy.loginfo("Request Del badge")
-
     try:
         del_badge_service = rospy.ServiceProxy('del_badge', suppr_badge)
         response = del_badge_service(True)
@@ -52,6 +55,7 @@ def del_badge_serv():
     except rospy.ServiceException as e:
         rospy.logerr(f"Service call failed: {e}")
         return False
+
 
 
 # Service ROS pour ajouter un badge
@@ -70,7 +74,7 @@ def send_user_info(prenom, nom, age, email, mdp, job_title):
 #   SECTION BASE DE DONNÉES    #
 # ============================ #
 
-DB_PATH = "~/ros_workspace/src/database/src/"
+DB_PATH = "/root/ros_workspace/src/database/database/"
 
 def get_last_10_values(db_name, column_name):
     """ Récupère les 10 dernières valeurs d'une colonne d'une base SQLite """
@@ -166,7 +170,7 @@ def get_database_data():
     """ Renvoie les 10 dernières valeurs des bases de données SQLite """
     temperature = get_last_10_values("dht11_temperature.db", "temperature")
     humidite = get_last_10_values("dht11_humidite.db", "humidite")
-    volume = get_last_10_values("volumeMicro.db", "volume")
+    volume = get_last_10_values("volumeMicro.db", "volSon")
 
     return jsonify({
         "temperature": temperature,

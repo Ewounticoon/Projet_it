@@ -9,7 +9,7 @@ import rospy  # ROS Python
 from sensors.msg import dht11  # Message ROS pour la température (type Float32)
 from datetime import datetime
 
-db_path=os.path.expanduser('~/ros_workspace/src/database/src/dht11_temperature.db') #chemin d'acces
+db_path=os.path.expanduser('~/ros_workspace/src/database/database/dht11_temperature.db') #chemin d'acces
 # Création de la base de données
 def create_database():
     
