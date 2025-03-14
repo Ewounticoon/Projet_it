@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify,flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import sqlite3
 import os
@@ -34,7 +34,7 @@ def load_user(user_id):
     try:
         login_service = rospy.ServiceProxy('login_serv', login_member)
         response = login_service(user_id)
-        rospy.loginfo(f"Service response: ")
+        rospy.loginfo(f"Service response: success = {response.success}")
         return response
     except rospy.ServiceException as e:
         rospy.logerr(f"Service call failed: {e}")
@@ -135,7 +135,7 @@ def login():
         if user:
             login_user(user)
             flash('Connexion reussie')
-            return redirect(url_for('index'))
+            return redirect(url_for('page_acceuil'))
         else :
             flash('Nom d\'utilisateur ou mot de passe incorrecte')
 
@@ -185,17 +185,18 @@ def traitement():
     donnee = request.form
     prenom = donnee.get('prenom')
     nom = donnee.get('nom')
+    username = donnee.get('username')
     age = donnee.get('age')
     email = donnee.get('email')
     mdp = donnee.get('mdp')
     job_title = donnee.get('job_title')
 
-    print(prenom, nom, age, email, mdp, job_title)
+    print(prenom, nom, username, age, email, mdp, job_title)
 
     if age:
         age = int(age)
 
-    send_user_info(prenom, nom, age, email, mdp, job_title)
+    send_user_info(prenom, nom, username, age, email, mdp, job_title)
 
     return "Traitement des données effectué", 200
 
@@ -223,6 +224,14 @@ def get_database_data():
         "humidite": humidite,
         "volume": volume
     })
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Vous avez ete deconnecte')
+    return redirect(url_for('login'))
 
 # ======================== #
 #     LANCEMENT FLASK      #

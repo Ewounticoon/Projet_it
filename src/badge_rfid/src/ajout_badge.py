@@ -36,7 +36,7 @@ def create_database_infos():
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de la création de la table : {e}")
     finally:
-        hashed_password_admin = generate_password_hash("admin", method='sha256')
+        hashed_password_admin = generate_password_hash("admin", method='pbkdf2:sha256')
         cursor.execute('''
             INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste)
             VALUES (?, ?, ?, ?, ?, ?, ?)
