@@ -1,14 +1,44 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify,flash
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import sqlite3
 import os
 import rospy
-from badge_rfid.srv import ajout_badge, suppr_badge
+from badge_rfid.srv import ajout_badge, suppr_badge, login_member
 from std_msgs.msg import Float32
 from sensors.msg import dht11
 
 app = Flask(__name__)
+app.secret_key = 'Enpiwen_mdp'
+
+# ====================== #
+#         LOGIN          #
+# ====================== #
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+    def __init__(self, id, username, password,role):
+        self.id=id
+        self.username=username
+        self.password=password
+        self.role=role
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    rospy.wait_for_service('login_serv')
+    try:
+        login_service = rospy.ServiceProxy('login_serv', login_member)
+        response = login_service(user_id)
+        rospy.loginfo(f"Service response: ")
+        return response
+    except rospy.ServiceException as e:
+        rospy.logerr(f"Service call failed: {e}")
+        return False
 
 # ====================== #
 #      SECTION ROS       #
@@ -95,6 +125,22 @@ def get_last_10_values(db_name, column_name):
 # ========================== #
 #      SECTION ROUTES        #
 # ========================== #
+@app.route('/login',methods=['GET','POST'])
+def login():
+    """ Page login """
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user=authenticate(username,password)
+        if user:
+            login_user(user)
+            flash('Connexion reussie')
+            return redirect(url_for('index'))
+        else :
+            flash('Nom d\'utilisateur ou mot de passe incorrecte')
+
+    return render_template('login.html')
+
 
 @app.route('/')
 def page_accueil():

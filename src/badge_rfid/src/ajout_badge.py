@@ -6,6 +6,7 @@ import sqlite3
 import os
 from datetime import datetime
 from badge_rfid.srv import ajout_badge, ajout_badgeResponse
+from werkzeug.security import generate_password_hash, check_password_hash
 import bcrypt
 
 # Chemin de la base de données
@@ -35,6 +36,11 @@ def create_database_infos():
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de la création de la table : {e}")
     finally:
+        hashed_password_admin = generate_password_hash("admin", method='sha256')
+        cursor.execute('''
+            INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (999999, "admin", "admin", 99, "admin@admin.com", hashed_password_admin, "admin"))
         conn.commit()
         conn.close()
 
@@ -53,10 +59,10 @@ def ajout_badge_base(req):
         rospy.logerr("Aucun badge détecté !")
         return ajout_badgeResponse(False)
 
-    rospy.loginfo(f"Infos utilisateur reçues : {req.prenom} {req.nom}, Âge: {req.age}, mail: {req.mail}, Poste: {req.poste}")
+    rospy.loginfo(f"Infos utilisateur reçues : {req.prenom} {req.nom}, Âge: {req.age}, mail: {req.mail}, Role: {req.poste}")
 
     # Suppression du hachage pour éviter l'erreur dans le test
-    hashed_password = req.password  # ⚠️ Enlever bcrypt.hashpw pour le test
+    hashed_password = generate_password_hash(req.password, method='sha256') # ⚠️ Enlever bcrypt.hashpw pour le test
 
     # Enregistrement dans la base de données
     conn = sqlite3.connect(db_path)
@@ -66,7 +72,7 @@ def ajout_badge_base(req):
         cursor.execute('''
             INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (global_badge, req.prenom, req.nom, req.age, req.mail, req.password, req.poste))
+        ''', (global_badge, req.prenom, req.nom, req.age, req.mail, hashed_password, req.poste))
 
         rospy.loginfo(f"Badge {global_badge} enregistré avec succès")
         success = True
