@@ -144,18 +144,19 @@ def send_user_info(prenom, nom, username, age, email, mdp, job_title):
 # ============================ #
 #   SECTION BASE DE DONNÉES    #
 # ============================ #
-DB_PATH=os.path.join(package_path, 'database', 'RFID_infos.db') #chemin d'acces
+DB_PATH=os.path.join(package_path, 'database') #chemin d'acces
 
-
-def get_last_10_values(db_name, column_name):
+def get_last_10_values(db_name,table_name, column_name):
     """ Récupère les 10 dernières valeurs d'une colonne d'une base SQLite """
     db_path = os.path.join(DB_PATH, db_name)
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
+    rospy.loginfo(f"Recherche pour {column_name}")
     
     try:
-        cursor.execute(f"SELECT {column_name} FROM {column_name} ORDER BY id DESC LIMIT 10;")
+        cursor.execute(f"SELECT {column_name} FROM {table_name} ORDER BY id DESC LIMIT 10;")
         results = cursor.fetchall()
+        rospy.loginfo(results)
         return [row[0] for row in results]
     except sqlite3.Error as e:
         print(f"Erreur SQLite : {e}")
@@ -184,9 +185,6 @@ def login():
             flash('Nom d\'utilisateur ou mot de passe incorrect', 'danger')
 
     return render_template('login.html')
-
-
-
 
 
 
@@ -259,23 +257,26 @@ def traitement():
 # ================================ #
 #     ROUTES POUR LES DONNÉES      #
 # ================================ #
-@app.route('/data')
+@app.route('/get_data')
 @login_required
 def get_sensor_data():
     """ Renvoie les valeurs en direct des capteurs ROS """
+    rospy.loginfo("Recherche dans capteur direct")
     return jsonify({
         "temperature": latest_temperature,
         "humidity": latest_humidity,
         "volume": latest_volume
     })
 
-@app.route('/get_data') # On triche tkt
+@app.route('/data') # On triche tkt
 @login_required
 def get_database_data():
     """ Renvoie les 10 dernières valeurs des bases de données SQLite """
-    temperature = get_last_10_values("dht11_temperature.db", "temperature")
-    humidite = get_last_10_values("dht11_humidite.db", "humidite")
-    volume = get_last_10_values("volumeMicro.db", "volSon")
+    rospy.loginfo("Recherche dans database")
+
+    temperature = get_last_10_values("dht11_temperature.db", "temperature","temperature")
+    humidite = get_last_10_values("dht11_humidite.db","humidite", "humidite")
+    volume = get_last_10_values("volumeMicro.db", "son","volSon")
 
     return jsonify({
         "temperature": temperature,
