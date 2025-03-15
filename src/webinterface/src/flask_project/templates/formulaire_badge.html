@@ -6,15 +6,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/static/style.css">
     </head>
+
     <body>
-        <h1>Entreprise ENPIWEN</h1>
-        <p>Ce site permet à un employé de s'identifier lors de son arrivée dans le local de l'entreprise ou à un nouvel employé d'entrer ses données personnelles</p>
-        <form method="POST" action="{{url_for('traitement')}}">
+        
+        <div id="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+
+            </a>
+        </div>
+
+        <form method="POST" action="{{url_for('succes_enregistrement')}}">
+        <br><br>
         <fieldset>
           <label for="prénom">Entrez votre prénom: <input id="prenom" name="prenom" type="text" required /></label>
           <label for="nom">Entrez votre nom: <input id="nom" name="nom" type="text" required /></label>
+          <label for="nom">Entrez un nom d'utilisateur: <input id="username" name="username" type="text" required /></label>
           <label for="age">Entrez votre âge: <input id="age" type="number" name="age" min="13" max="120" /></label>
-          <label for="intitulé du poste">Entrez l'intitulé de votre poste: <input id="job_title" name="job_title" type="text" required /></label>
+          <label for="intitulé du poste">Entrez l'intitulé de votre role: <input id="job_title" name="job_title" type="text" required /></label>
           <label for="email">Entrez votre adresse mail personnelle: <input id="email" name="email" type="email" required /></label>
           <label for="mdp">Entrez un mot de passe: <input id="mdp" name="mdp" type="password" pattern="[a-z0-5]{8,}" required /></label>
           <input type="submit" value="Submit" />

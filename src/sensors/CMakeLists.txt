@@ -39,4 +39,3 @@ catkin_install_python(PROGRAMS
 
 # Dépendances Python externes (optionnel, si nécessaire pour votre projet)
 find_package(PythonLibs REQUIRED)
-

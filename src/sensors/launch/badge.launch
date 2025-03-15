@@ -11,6 +11,12 @@
         <!-- Exemple : <param name="param_name" value="param_value" /> -->
     </node>
 
+        <!-- Lancer le noeud Database RFID -->
+    <node pkg="database" type="database_RFID.py" name="database_RFID" output="screen">
+        <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
+        <!-- Exemple : <param name="param_name" value="param_value" /> -->
+    </node>
+
     <node pkg="webinterface" type="app.py" name="app" output="screen">
         <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
         <!-- Exemple : <param name="param_name" value="param_value" /> -->

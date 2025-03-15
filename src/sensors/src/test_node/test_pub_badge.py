@@ -1,41 +1,26 @@
-#!/usr/bin/env python3.5
-# -- coding: utf-8 --
+#!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import Int32  # Ajouter l'import pour le message Int32
+from std_msgs.msg import Int32
+import random
 import time
 
-
-class Node_RFID:
+class TestNodeRFID:
     def __init__(self):
-       
-        # Initialisation du publisher (topic pour l'ID RFID)
-        self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)  # Utilisation de self.pub_rfid
-        
-        # Affichage dans le terminal pour l'utilisateur
-        rospy.loginfo("En attente d'un badge (pour quitter, Ctrl + c)")
+        self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)
+        rospy.loginfo("Simulation RFID en cours...")
 
-    def read_rfid(self):
-        # Boucle infinie pour lire les tags RFID
+    def simulate_rfid(self):
         while not rospy.is_shutdown():
-            rfid_id=123456
-            # Publier l'ID sur le topic /topic_rfid
+            time.sleep(5)  # Simule l'attente d'un badge RFID
+            rfid_id = random.randint(10000, 99999)  # Génère un ID aléatoire
+            rospy.loginfo(f"Badge détecté : {rfid_id}")
             self.pub_rfid.publish(rfid_id)
-            
-            # Attente de 1 seconde pour éviter une lecture rapide en boucle
-            time.sleep(1)
 
 def main():
-    # Initialise le noeud ROS
-    rospy.init_node('node_rfid', anonymous=True)
-    
-    # Création de l'objet pour la lecture RFID
-    rfid_node = Node_RFID()
-    
-    # Lancer la lecture RFID
-    rfid_node.read_rfid()
-    
-    # Garder le noeud en fonctionnement
+    rospy.init_node('test_node_rfid', anonymous=True)
+    rfid_tester = TestNodeRFID()
+    rfid_tester.simulate_rfid()
     rospy.spin()
 
 if __name__ == '__main__':

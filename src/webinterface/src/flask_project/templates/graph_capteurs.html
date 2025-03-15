@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Entreprise ENPIWEN</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        #graph-container {
+            display: flex;
+            flex-direction: column; /* Graphiques en colonne */
+            align-items: center; /* Centrage horizontal */
+            gap: 20px; /* Espace entre les graphiques */
+        }
+
+        .graph-box {
+            width: 70%; /* Taille plus grande */
+            max-width: 600px;
+            padding: 15px;
+            border: 1px solid #ccc; /* Bordure pour séparation */
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important; /* Taille augmentée */
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var temperatureChart = new Chart(document.getElementById('temperatureChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Température', data: [], borderColor: 'red', fill: false }] }
+            });
+
+            var humiditeChart = new Chart(document.getElementById('humiditeChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Humidité', data: [], borderColor: 'blue', fill: false }] }
+            });
+
+            var volumeChart = new Chart(document.getElementById('volumeChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Volume sonore', data: [], borderColor: 'green', fill: false }] }
+            });
+
+            // 🟢 Étape 1 : Charger immédiatement les 10 dernières valeurs au démarrage
+            function loadInitialData() {
+                $.getJSON('/data', function(data) {
+                    var now = new Date();
+                    var labels = [];
+
+                    for (var i = 9; i >= 0; i--) {
+                        labels.push(new Date(now - i * 2000).toLocaleTimeString());  // Crée des timestamps fictifs pour les 10 dernières valeurs
+                    }
+
+                    // Initialisation des graphiques avec les 10 dernières valeurs
+                    temperatureChart.data.labels = labels;
+                    temperatureChart.data.datasets[0].data = data.temperature;
+                    temperatureChart.update();
+
+                    humiditeChart.data.labels = labels;
+                    humiditeChart.data.datasets[0].data = data.humidity;
+                    humiditeChart.update();
+
+                    volumeChart.data.labels = labels;
+                    volumeChart.data.datasets[0].data = data.volume;
+                    volumeChart.update();
+                });
+            }
+
+            // 🟢 Étape 2 : Mettre à jour les graphiques en temps réel avec /data
+            function updateGraphs() {
+                $.getJSON('/data', function(data) {
+                    var now = new Date().toLocaleTimeString();
+                
+                    // 🟢 Prendre UNIQUEMENT la dernière valeur des tableaux reçus
+                    var newTemperature = data.temperature[data.temperature.length - 1];
+                    var newHumidity = data.humidity[data.humidity.length - 1];
+                    var newVolume = data.volume[data.volume.length - 1];
+                
+                    // Ajout d'une seule nouvelle valeur aux graphiques
+                    temperatureChart.data.labels.push(now);
+                    temperatureChart.data.datasets[0].data.push(newTemperature);
+                    if (temperatureChart.data.labels.length > 10) {
+                        temperatureChart.data.labels.shift();
+                        temperatureChart.data.datasets[0].data.shift();
+                    }
+                    temperatureChart.update();
+                
+                    humiditeChart.data.labels.push(now);
+                    humiditeChart.data.datasets[0].data.push(newHumidity);
+                    if (humiditeChart.data.labels.length > 10) {
+                        humiditeChart.data.labels.shift();
+                        humiditeChart.data.datasets[0].data.shift();
+                    }
+                    humiditeChart.update();
+                
+                    volumeChart.data.labels.push(now);
+                    volumeChart.data.datasets[0].data.push(newVolume);
+                    if (volumeChart.data.labels.length > 10) {
+                        volumeChart.data.labels.shift();
+                        volumeChart.data.datasets[0].data.shift();
+                    }
+                    volumeChart.update();
+                });
+            }
+
+            // Charger immédiatement les 10 dernières valeurs
+            loadInitialData();
+
+            // Ensuite, mettre à jour toutes les 2 secondes
+            var interval = setInterval(updateGraphs, 2000);
+
+            // Boutons de démarrage et d'arrêt
+            $("#dev_button_start").click(function () {
+                clearInterval(interval);
+                interval = setInterval(updateGraphs, 2000);
+            });
+
+            $("#dev_button_stop").click(function () {
+                clearInterval(interval);
+            });
+        });
+
+    </script>    
+</head>
+<body>
+
+    <div id="logo">
+        <a href="/">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
+    <h1>Entreprise ENPIWEN</h1>
+    
+    <form method="POST" action="{{ url_for('page_accueil') }}">
+        <br>
+        <button id="dev_button_start" type="button">Démarrer l'actualisation</button>
+        <button id="dev_button_stop" type="button">Arrêter l'actualisation</button>
+        <br>
+        
+        <fieldset>
+            <legend>Quel(s) graphique(s) voulez-vous réinitialiser ?</legend>
+            <label for="température"> <input id="température" type="checkbox" name="graphique" value="graph_1" class="inline" checked> Température </label>
+            <label for="humidité"> <input id="humidité" type="checkbox" name="graphique" value="graph_2" class="inline"> Humidité </label>
+            <label for="son"> <input id="son" type="checkbox" name="graphique" value="graph_3" class="inline"> Son </label>
+        </fieldset>
+    </form>
+
+    <div id="graph-container">
+        <div class="graph-box">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="graph-box">
+            <canvas id="humiditeChart"></canvas>
+        </div>
+        <div class="graph-box">
+            <canvas id="volumeChart"></canvas>
+        </div>
+    </div>  
+</body>
+</html>

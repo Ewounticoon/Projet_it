@@ -1,8 +1,9 @@
 string prenom
 string nom
+string username
 int32 age 
-string poste
 string mail
 string password
+string poste
 ---
 bool success
