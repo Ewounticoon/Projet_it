@@ -5,10 +5,15 @@ from std_msgs.msg import Int32
 import sqlite3
 import os
 from datetime import datetime
+import rospkg
 
-# Chemins des bases de données
-db_path_mesures = os.path.expanduser('~/ros_workspace/src/database/database/RFID_mesures.db')
-db_path_infos = os.path.expanduser('~/ros_workspace/src/database/database/RFID_infos.db')
+#Chemin vers database
+rospack = rospkg.RosPack()
+package_path = rospack.get_path('database')
+
+db_path_mesures=os.path.join(package_path, 'database', 'RFID_mesures.db') #chemin d'acces
+db_path_infos=os.path.join(package_path, 'database', 'RFID_infos.db') #chemin d'acces
+
 
 # Création de la base de données des mesures
 def create_database_mesure():

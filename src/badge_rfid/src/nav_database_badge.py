@@ -6,9 +6,13 @@ import sqlite3
 import os
 
 from badge_rfid.srv import login_member, login_memberResponse
+import rospkg
 
-# Chemin de la base de données
-db_path = os.path.expanduser('~/ros_workspace/src/database/database/RFID_infos.db')
+#Chemin vers database
+rospack = rospkg.RosPack()
+package_path = rospack.get_path('database')
+
+db_path=os.path.join(package_path, 'database', 'RFID_infos.db') #chemin d'acces
 
 def extract_data(req):
     username = req.username

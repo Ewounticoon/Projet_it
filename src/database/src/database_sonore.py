@@ -8,8 +8,13 @@ import os
 import rospy  # ROS Python
 from std_msgs.msg import Float32  # Message ROS pour le son (type Float32)
 from datetime import datetime
+import rospkg
 
-db_path=os.path.expanduser('~/ros_workspace/src/database/database/volumeMicro.db') #chemin d'acces
+#Chemin vers database
+rospack = rospkg.RosPack()
+package_path = rospack.get_path('database')
+
+db_path=os.path.join(package_path, 'database', 'volumeMicro.db') #chemin d'acces
 # Création de la base de données
 def create_database():
     

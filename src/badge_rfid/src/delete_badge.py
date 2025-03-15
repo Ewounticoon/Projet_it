@@ -6,9 +6,13 @@ import sqlite3
 import os
 import sys
 from badge_rfid.srv import suppr_badge, suppr_badgeResponse
+import rospkg
 
-# Chemin de la base de données
-db_path = '/root/ros_workspace/src/database/database/RFID_infos.db'
+#Chemin vers database
+rospack = rospkg.RosPack()
+package_path = rospack.get_path('database')
+
+db_path=os.path.join(package_path, 'database', 'RFID_infos.db') #chemin d'acces
 
 # Variable globale pour stocker le numéro de badge
 global_badge = None

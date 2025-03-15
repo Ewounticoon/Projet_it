@@ -9,6 +9,11 @@ from badge_rfid.srv import ajout_badge, suppr_badge, login_member
 from std_msgs.msg import Float32
 from sensors.msg import dht11
 from werkzeug.security import check_password_hash
+import rospkg
+
+#Chemin vers database
+rospack = rospkg.RosPack()
+package_path = rospack.get_path('database')
 
 
 app = Flask(__name__)
@@ -23,30 +28,42 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 class User(UserMixin):
-    def __init__(self,id, username, password,role):
-        self.id=id
-        self.username=username
-        self.password=password
-        self.role=role
+    def __init__(self, id, username, password, role):
+        self.id = str(id)  # Assure que l'ID est bien une chaîne
+        self.username = username
+        self.password = password
+        self.role = role
+
+    def get_id(self):
+        return str(self.id)  # Retourne une chaîne pour éviter les erreurs
 
 
-@login_manager.user_loader
+
+# Dictionnaire temporaire pour stocker les utilisateurs en mémoire
+users_cache = {}
+
 @login_manager.user_loader
 def load_user(user_id):
+    if user_id in users_cache:
+        return users_cache[user_id]  # Retourne l'utilisateur en cache sans appeler ROS
+    
+    rospy.loginfo(f"Trying to load user with ID: {user_id}")
+    
     rospy.wait_for_service('login_serv')
     try:
         login_service = rospy.ServiceProxy('login_serv', login_member)
         response = login_service(user_id)
-        rospy.loginfo(f"Service response: success = {response.success}, username= {response.username}, psw={response.password}, poste = {response.role}")
-        
+
         if response.success:
-            # Créer un objet User avec les données retournées
-            return User(id=response.id, username=response.username, password=response.password, role=response.role)
+            user = User(id=response.id, username=response.username, password=response.password, role=response.role)
+            users_cache[user_id] = user  # Stocke l'utilisateur en cache
+            return user
         else:
             return None
     except rospy.ServiceException as e:
         rospy.logerr(f"Service call failed: {e}")
         return None
+
 
     
 
@@ -127,8 +144,8 @@ def send_user_info(prenom, nom, username, age, email, mdp, job_title):
 # ============================ #
 #   SECTION BASE DE DONNÉES    #
 # ============================ #
+DB_PATH=os.path.join(package_path, 'database', 'RFID_infos.db') #chemin d'acces
 
-DB_PATH = "/root/ros_workspace/src/database/database/"
 
 def get_last_10_values(db_name, column_name):
     """ Récupère les 10 dernières valeurs d'une colonne d'une base SQLite """
@@ -151,7 +168,6 @@ def get_last_10_values(db_name, column_name):
 # ========================== #
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    """ Page login """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -159,16 +175,13 @@ def login():
 
         if user:
             login_user(user)
-            flash('Connexion réussie')
+            users_cache[user.id] = user  # Stocke l'utilisateur pour éviter d'appeler ROS à chaque requête
+            
+            print(f"Utilisateur connecté ? {current_user.is_authenticated}")
 
-            # Rediriger vers la page d'accueil ou la page spécifiée dans 'next'
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
-            else:
-                return redirect(url_for('page_accueil'))  # Redirection vers la page d'accueil principale
+            return redirect(url_for('page_accueil'))
         else:
-            flash('Nom d\'utilisateur ou mot de passe incorrect')
+            flash('Nom d\'utilisateur ou mot de passe incorrect', 'danger')
 
     return render_template('login.html')
 
@@ -176,8 +189,10 @@ def login():
 
 
 
-@login_required
+
 @app.route('/page_accueil')
+@login_required
+
 def page_accueil():
     """ Page d'accueil principale """
     return render_template('page_accueil.html')
