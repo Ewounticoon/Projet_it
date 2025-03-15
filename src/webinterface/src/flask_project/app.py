@@ -85,30 +85,11 @@ def authenticate(username, password):
 #      SECTION ROS       #
 # ====================== #
 
-# Variables globales pour stocker les valeurs des capteurs
-latest_temperature = 0.0
-latest_humidity = 0.0
-latest_volume = 0.0
-
-# Callbacks ROS pour mettre à jour les valeurs
-def temp_callback(msg):
-    global latest_temperature
-    latest_temperature = msg.temperature
-
-def hum_callback(msg):
-    global latest_humidity
-    latest_humidity = msg.humidity
-
-def volume_callback(msg):
-    global latest_volume
-    latest_volume = msg.data
 
 # Initialisation de ROS dans le contexte de Flask
 def init_ros():
     rospy.init_node('flask_node', anonymous=True)
-    rospy.Subscriber('/topic_dht11', dht11, temp_callback)
-    rospy.Subscriber('/topic_dht11', dht11, hum_callback)
-    rospy.Subscriber('/topic_micro', Float32, volume_callback)
+
 # Service ROS pour ajouter un badge
 def del_badge_serv():
     try:
@@ -151,12 +132,10 @@ def get_last_10_values(db_name,table_name, column_name):
     db_path = os.path.join(DB_PATH, db_name)
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    rospy.loginfo(f"Recherche pour {column_name}")
     
     try:
         cursor.execute(f"SELECT {column_name} FROM {table_name} ORDER BY id DESC LIMIT 10;")
         results = cursor.fetchall()
-        rospy.loginfo(results)
         return [row[0] for row in results]
     except sqlite3.Error as e:
         print(f"Erreur SQLite : {e}")
@@ -261,16 +240,7 @@ def traitement():
 # ================================ #
 #     ROUTES POUR LES DONNÉES      #
 # ================================ #
-@app.route('/get_data')
-@login_required
-def get_sensor_data():
-    """ Renvoie les valeurs en direct des capteurs ROS """
-    rospy.loginfo("Recherche dans capteur direct")
-    return jsonify({
-        "temperature": latest_temperature,
-        "humidity": latest_humidity,
-        "volume": latest_volume
-    })
+
 
 @app.route('/data') # On triche tkt
 @login_required
@@ -281,10 +251,9 @@ def get_database_data():
     temperature = get_last_10_values("dht11_temperature.db", "temperature","temperature")
     humidite = get_last_10_values("dht11_humidite.db","humidite", "humidite")
     volume = get_last_10_values("volumeMicro.db", "son","volSon")
-
     return jsonify({
         "temperature": temperature,
-        "humidite": humidite,
+        "humidity": humidite,
         "volume": volume
     })
 
