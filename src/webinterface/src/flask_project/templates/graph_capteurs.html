@@ -96,6 +96,13 @@
     </script>    
 </head>
 <body>
+
+    <div id="logo">
+        <a href="/">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
     <h1>Entreprise ENPIWEN</h1>
     
     <form method="POST" action="{{ url_for('page_accueil') }}">
