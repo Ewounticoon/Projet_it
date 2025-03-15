@@ -8,6 +8,7 @@ import rosunit
 from unittest.mock import MagicMock, patch, call
 from std_msgs.msg import Int32
 from badge_rfid.srv import ajout_badge, ajout_badgeResponse
+from werkzeug.security import check_password_hash
 
 # Ajouter le chemin du dossier src pour trouver `ajout_badge.py`
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
@@ -25,9 +26,10 @@ class TestAjoutBadge(unittest.TestCase):
         self.mock_badge_msg.data = 123456
         
         # Simuler une requête valide pour le service
-        self.mock_service_req = ajout_badge.ajout_badge()  # ✅ Correction ici
+        self.mock_service_req = ajout_badge.ajout_badge() 
         self.mock_service_req.prenom = "John"
         self.mock_service_req.nom = "Doe"
+        self.mock_service_req.username = "johndoe"
         self.mock_service_req.age = 25
         self.mock_service_req.mail = "john.doe@example.com"
         self.mock_service_req.password = "securepassword"
@@ -65,33 +67,42 @@ class TestAjoutBadge(unittest.TestCase):
     def test_ajout_badge_base_success(self, mock_sqlite_connect):
         """Test si l'ajout d'un badge fonctionne correctement."""
 
+
         mock_conn = mock_sqlite_connect.return_value
         mock_cursor = mock_conn.cursor.return_value
 
-        ajout_badge.global_badge = 123456  # ✅ Assurer que le badge est bien défini
-        print(f"DEBUG TEST - Valeur de global_badge juste avant appel: {ajout_badge.global_badge}")  # ✅ Debug
+        ajout_badge.global_badge = 123456  # Assurer que le badge est bien défini
+        print(f"DEBUG TEST - Valeur de global_badge juste avant appel: {ajout_badge.global_badge}")  # Debug
 
-        response = ajout_badge.ajout_badge_base(self.mock_service_req)  # ✅ Correction ici
+        response = ajout_badge.ajout_badge_base(self.mock_service_req)  # 
 
-        print("DEBUG TEST - SQL EXECUTE CALLS:", mock_cursor.execute.call_args_list)  # ✅ Debug console
 
         # Vérifier que execute() a bien été appelé
         mock_cursor.execute.assert_called()
 
         # Vérifier si la requête est correcte
-        expected_sql = "INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        expected_sql = "INSERT INTO infos (numBadge,user, prenom, nom, age, mail, mdp, poste) VALUES (?,?, ?, ?, ?, ?, ?, ?)"
         actual_sql, actual_values = mock_cursor.execute.call_args[0]  # Récupère l'argument SQL
-        
+
         # Normalisation des espaces et suppression des sauts de ligne
         actual_sql = " ".join(actual_sql.split())
-        
+
         self.assertEqual(expected_sql, actual_sql, "La requête SQL exécutée ne correspond pas à celle attendue.")
+
+        # Récupérer le mot de passe réellement inséré
+        actual_hashed_password = actual_values[6]  # Position du mdp dans le tuple
+        expected_password = "securepassword"
+
+        # Vérifier que le mot de passe haché correspond bien au mot de passe d’origine
+        self.assertTrue(check_password_hash(actual_hashed_password, expected_password),
+                        "Le mot de passe stocké ne correspond pas au mot de passe attendu.")
+
+        # Vérifier que les autres valeurs sont correctes
         self.assertEqual(
-            actual_values, 
-            (123456, "John", "Doe", 25, "john.doe@example.com", "securepassword", "Ingénieur"),
-            "Les valeurs insérées ne correspondent pas."
+            actual_values[:6] + actual_values[7:],  # Exclut le mot de passe
+            (123456, "johndoe", "John", "Doe", 25, "john.doe@example.com", "Ingénieur"),
+            "Les autres valeurs insérées ne correspondent pas."
         )
-        
 
         # Vérifier que commit et close sont appelés
         mock_conn.commit.assert_called_once()

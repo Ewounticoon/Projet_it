@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import Float32
+from std_msgs.msg import Int32
 import random
+import time
 
-class TestNodeDHT11:
+class TestNodeRFID:
     def __init__(self):
-        self.pub_temp = rospy.Publisher('/topic_tempDHT11', Float32, queue_size=10)
-        self.pub_hum = rospy.Publisher('/topic_humDHT11', Float32, queue_size=10)
-        rospy.Timer(rospy.Duration(5), self.pub_donnees)
-        rospy.loginfo("Simulation DHT11 en cours...")
+        self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)
+        rospy.loginfo("Simulation RFID en cours...")
 
-    def pub_donnees(self, event):
-        temperature = round(random.uniform(20, 30), 2)  # Température entre 20 et 30°C
-        humidity = round(random.uniform(40, 60), 2)  # Humidité entre 40% et 60%
-        
-        rospy.loginfo(f"Température : {temperature}°C | Humidité : {humidity}%")
-        self.pub_temp.publish(temperature)
-        self.pub_hum.publish(humidity)
+    def simulate_rfid(self):
+        while not rospy.is_shutdown():
+            time.sleep(5)  # Simule l'attente d'un badge RFID
+            rfid_id = random.randint(10000, 99999)  # Génère un ID aléatoire
+            rospy.loginfo(f"Badge détecté : {rfid_id}")
+            self.pub_rfid.publish(rfid_id)
 
 def main():
-    rospy.init_node('test_node_dht11', anonymous=True)
-    TestNodeDHT11()
+    rospy.init_node('test_node_rfid', anonymous=True)
+    rfid_tester = TestNodeRFID()
+    rfid_tester.simulate_rfid()
     rospy.spin()
 
 if __name__ == '__main__':

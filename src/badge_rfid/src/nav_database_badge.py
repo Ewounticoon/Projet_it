@@ -25,14 +25,14 @@ def extract_data(req):
         data_extracted = cursor.fetchone()  # Stockage des données dans une variable
 
         if data_extracted:
-            id, password, role = data_extracted  # Séparation des informations dans des variables distinctes
+            id_, password, role = data_extracted  # Séparation des informations dans des variables distinctes
 
             rospy.loginfo("Données extraites avec succès")
             success = True
         else:
             rospy.logwarn(f"Aucune donnée trouvée pour l'utilisateur {username}")
             success = False
-            id = None
+            id_ = None
             username=None
             role =None
             password=None
@@ -40,7 +40,7 @@ def extract_data(req):
     except sqlite3.Error as e:
         rospy.logerr(f"Erreur lors de l'extraction des données : {e}")
         success = False
-        id = None
+        id_ = None
         username=None
         role =None
         password=None
@@ -49,7 +49,7 @@ def extract_data(req):
         conn.commit()
         conn.close()
 
-    return login_memberResponse(success,id, username, password, role)  # Retour des résultats pour le service ROS
+    return login_memberResponse(success,id_, username, password, role)  # Retour des résultats pour le service ROS
 
 
 
