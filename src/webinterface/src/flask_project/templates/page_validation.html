@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+
+    <div id="logo">
+        <a href="/">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
+    <br><br><br><br><br><br><br><br><br><br>
     <h1>Confirmez la suppression du badge</h1>
     <form method="GET" action="{{url_for('page_accueil')}}">
     <button type="submit">Confirmer</button>

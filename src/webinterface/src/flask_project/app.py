@@ -220,10 +220,14 @@ def placez_badge():
     return render_template('placez_badge.html', action=action)
 
 @app.route('/formulaire_badge')
-@login_required
 def formulaire_badge():
     """ Formulaire pour ajouter un badge """
     return render_template('formulaire_badge.html')
+
+@app.route('/succes_enregistrement', methods=['GET', 'POST'])
+def succes_enregistrement():
+    """ Page après avoir rempli le formulaire avec succès """
+    return render_template('succes_enregistrement.html')
 
 @app.route('/page_validation')
 @login_required

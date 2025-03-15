@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/style.css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         #graph-container {
@@ -96,6 +96,13 @@
     </script>    
 </head>
 <body>
+
+    <div id="logo">
+        <a href="/">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
     <h1>Entreprise ENPIWEN</h1>
     
     <form method="POST" action="{{ url_for('page_accueil') }}">
