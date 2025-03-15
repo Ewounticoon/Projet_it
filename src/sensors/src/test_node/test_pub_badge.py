@@ -1,41 +1,27 @@
-#!/usr/bin/env python3.5
-# -- coding: utf-8 --
+#!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import Int32  # Ajouter l'import pour le message Int32
-import time
+from std_msgs.msg import Float32
+import random
 
-
-class Node_RFID:
+class TestNodeDHT11:
     def __init__(self):
-       
-        # Initialisation du publisher (topic pour l'ID RFID)
-        self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)  # Utilisation de self.pub_rfid
-        
-        # Affichage dans le terminal pour l'utilisateur
-        rospy.loginfo("En attente d'un badge (pour quitter, Ctrl + c)")
+        self.pub_temp = rospy.Publisher('/topic_tempDHT11', Float32, queue_size=10)
+        self.pub_hum = rospy.Publisher('/topic_humDHT11', Float32, queue_size=10)
+        rospy.Timer(rospy.Duration(5), self.pub_donnees)
+        rospy.loginfo("Simulation DHT11 en cours...")
 
-    def read_rfid(self):
-        # Boucle infinie pour lire les tags RFID
-        while not rospy.is_shutdown():
-            rfid_id=123456
-            # Publier l'ID sur le topic /topic_rfid
-            self.pub_rfid.publish(rfid_id)
-            
-            # Attente de 1 seconde pour éviter une lecture rapide en boucle
-            time.sleep(1)
+    def pub_donnees(self, event):
+        temperature = round(random.uniform(20, 30), 2)  # Température entre 20 et 30°C
+        humidity = round(random.uniform(40, 60), 2)  # Humidité entre 40% et 60%
+        
+        rospy.loginfo(f"Température : {temperature}°C | Humidité : {humidity}%")
+        self.pub_temp.publish(temperature)
+        self.pub_hum.publish(humidity)
 
 def main():
-    # Initialise le noeud ROS
-    rospy.init_node('node_rfid', anonymous=True)
-    
-    # Création de l'objet pour la lecture RFID
-    rfid_node = Node_RFID()
-    
-    # Lancer la lecture RFID
-    rfid_node.read_rfid()
-    
-    # Garder le noeud en fonctionnement
+    rospy.init_node('test_node_dht11', anonymous=True)
+    TestNodeDHT11()
     rospy.spin()
 
 if __name__ == '__main__':
