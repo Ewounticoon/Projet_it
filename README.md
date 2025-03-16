@@ -62,9 +62,12 @@ An interactive web interface allows users to:
    source devel/setup.bash
    catkin_make
    source devel/setup.bash
-   roslaunch industrial_it system.launch
+   roslaunch main system.launch
    ```
-
+   **Or start without sensor**
+   ```bash
+   roslaunch main system_without_sensor.launch
+   ```
 4. **Access the Web Interface**:
    Open a browser and go to:
    ```
@@ -137,9 +140,14 @@ Une interface Web interactive permet :
 3. **Démarrer le système**:
    ```bash
    cd ~/Projet_it
+   source devel/setup.bash
    catkin_make
    source devel/setup.bash
    roslaunch industrial_it system.launch
+   ```
+   **Ou démarre sans capteur**
+   ```bash
+   roslaunch main system_without_sensor.launch
    ```
 
 4. **Accéder à l'interface web**:
