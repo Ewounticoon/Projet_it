@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, abort
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import sqlite3
 import os
@@ -10,6 +10,8 @@ from std_msgs.msg import Float32
 from sensors.msg import dht11
 from werkzeug.security import check_password_hash
 import rospkg
+from functools import wraps
+
 
 #Chemin vers database
 rospack = rospkg.RosPack()
@@ -38,6 +40,13 @@ class User(UserMixin):
         return str(self.id)  # Retourne une chaîne pour éviter les erreurs
 
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.role != 'admin':  # Vérifie si l'utilisateur est un admin
+            abort(403)  # Accès interdit (Erreur HTTP 403)
+        return f(*args, **kwargs)  # Exécute la fonction si l'utilisateur est admin
+    return decorated_function
 
 # Dictionnaire temporaire pour stocker les utilisateurs en mémoire
 users_cache = {}
@@ -180,7 +189,7 @@ def graph_capteurs():
 
 @app.route('/placez_badge', methods=['GET', 'POST'])
 @login_required
-
+@admin_required  # Vérifie que l'utilisateur est admin
 def placez_badge():
     """ Page intermédiaire pour ajouter ou supprimer un badge """
     if request.method == 'POST':
@@ -188,7 +197,7 @@ def placez_badge():
         if action == "ajouter":
             return redirect(url_for('formulaire_badge'))
         elif action == "supprimer":
-            return redirect(url_for('page_validation'))
+            return redirect(url_for('conf_supression'))
 
     action = request.args.get('action')
     if not action:
@@ -198,12 +207,15 @@ def placez_badge():
 
 @app.route('/formulaire_badge')
 @login_required
+@admin_required  # Vérifie que l'utilisateur est admin
 def formulaire_badge():
     """ Formulaire pour ajouter un badge """
     return render_template('formulaire_badge.html')
 
+
 @app.route('/succes_enregistrement', methods=['GET', 'POST'])
 @login_required
+@admin_required  # Vérifie que l'utilisateur est admin
 def succes_enregistrement():
     """ Page après avoir rempli le formulaire avec succès """
 
@@ -222,19 +234,37 @@ def succes_enregistrement():
     if age:
         age = int(age)
 
-    send_user_info(prenom, nom, username, age, email, mdp, job_title)
+    success = send_user_info(prenom, nom, username, age, email, mdp, job_title)
+    if success : 
+        return render_template('succes_enregistrement.html')
+    else : 
+        return render_template('echec_enregistrement.html')
 
-    return render_template('succes_enregistrement.html')
 
-@app.route('/page_validation')
+@app.route('/success_suprr')
 @login_required
+@admin_required  # Vérifie que l'utilisateur est admin
 def page_validation():
     """ Page de validation avant suppression d'un badge """
-    del_badge_serv()
+    success = del_badge_serv()
+    if success :
+        return render_template('success_suppression.html')
+    else : 
+        return render_template('echec_suppression.html')
+
+
+@app.route('/conf_supression')
+@login_required
+@admin_required  # Vérifie que l'utilisateur est admin
+def conf_supression():
+    """ Page de validation avant suppression d'un badge """
     return render_template('page_validation.html')
+
 
 @app.route('/traitement', methods=['POST'])
 @login_required
+@admin_required  # Vérifie que l'utilisateur est admin
+
 def traitement():
     """ Traitement du formulaire d'ajout de badge """
     donnee = request.form
