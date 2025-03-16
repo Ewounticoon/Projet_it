@@ -43,7 +43,7 @@ class TestAjoutBadge(unittest.TestCase):
         mock_sqlite_connect.return_value = mock_conn
         mock_conn.cursor.return_value = mock_cursor
 
-        ajout_badge.create_database_infos()  # ✅ Correction ici
+        ajout_badge.create_database_infos()  
 
         mock_cursor.execute.assert_called()
         mock_conn.commit.assert_called()
@@ -56,7 +56,7 @@ class TestAjoutBadge(unittest.TestCase):
         print(f"DEBUG TEST - global_badge avant lecture: {ajout_badge.global_badge}")  # ✅ Debug
 
         # Appel direct de la fonction callback `lecture_badge()`
-        ajout_badge.lecture_badge(self.mock_badge_msg)  # ✅ Correction ici
+        ajout_badge.lecture_badge(self.mock_badge_msg)  #
 
         print(f"DEBUG TEST - global_badge après lecture: {ajout_badge.global_badge}")  # ✅ Debug
 

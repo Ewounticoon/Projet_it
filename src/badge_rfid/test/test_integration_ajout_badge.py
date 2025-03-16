@@ -40,6 +40,7 @@ class TestIntegrationAjoutBadge(unittest.TestCase):
         request = ajout_badgeRequest()
         request.prenom = "Alice"
         request.nom = "Dupont"
+        request.username = "alice_dupont"
         request.age = 30
         request.mail = "alice.dupont@example.com"
         request.password = "securepassword"
@@ -53,9 +54,10 @@ class TestIntegrationAjoutBadge(unittest.TestCase):
         result = self.cursor.fetchone()
 
         self.assertIsNotNone(result, "Le badge devrait être enregistré en base !")
-        self.assertEqual(result[2], "Alice", "Le prénom est incorrect")
-        self.assertEqual(result[3], "Dupont", "Le nom est incorrect")
-        self.assertEqual(result[5], "alice.dupont@example.com", "L'email est incorrect")
+        self.assertEqual(result[2], "alice_dupont", "Le username est incorrect")
+        self.assertEqual(result[3], "Alice", "Le prénom est incorrect")
+        self.assertEqual(result[4], "Dupont", "Le nom est incorrect")
+        self.assertEqual(result[6], "alice.dupont@example.com", "L'email est incorrect")
 
     @classmethod
     def tearDownClass(cls):

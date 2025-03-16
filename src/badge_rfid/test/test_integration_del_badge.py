@@ -21,7 +21,7 @@ class TestIntegrationSuppressionBadge(unittest.TestCase):
         # ✅ Ajouter un badge manuellement en base
         cls.conn = sqlite3.connect(DB_PATH)
         cls.cursor = cls.conn.cursor()
-        cls.cursor.execute("INSERT INTO infos (numBadge, prenom, nom, age, mail, mdp, poste) VALUES (888888, 'Bob', 'Martin', 40, 'bob.martin@example.com', 'mdp_test', 'Manager')")
+        cls.cursor.execute("INSERT INTO infos (numBadge,user, prenom, nom, age, mail, mdp, poste) VALUES (888888,'bub_user', 'Bob', 'Martin', 40, 'bob.martin@example.com', 'mdp_test', 'Manager')")
         cls.conn.commit()
 
     def test_suppression_badge_integration(self):
