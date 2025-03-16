@@ -109,7 +109,6 @@ def del_badge_serv():
         return False
 
 
-
 # Service ROS pour ajouter un badge
 def send_user_info(prenom, nom, username, age, email, mdp, job_title):
     rospy.wait_for_service('ajout_badge')
@@ -169,7 +168,6 @@ def login():
 
 @app.route('/page_accueil')
 @login_required
-
 def page_accueil():
     """ Page d'accueil principale """
     return render_template('page_accueil.html')
@@ -199,13 +197,33 @@ def placez_badge():
     return render_template('placez_badge.html', action=action)
 
 @app.route('/formulaire_badge')
+@login_required
 def formulaire_badge():
     """ Formulaire pour ajouter un badge """
     return render_template('formulaire_badge.html')
 
 @app.route('/succes_enregistrement', methods=['GET', 'POST'])
+@login_required
 def succes_enregistrement():
     """ Page après avoir rempli le formulaire avec succès """
+
+    """ Traitement du formulaire d'ajout de badge """
+    donnee = request.form
+    prenom = donnee.get('prenom')
+    nom = donnee.get('nom')
+    username = donnee.get('username')
+    age = donnee.get('age')
+    email = donnee.get('email')
+    mdp = donnee.get('mdp')
+    job_title = donnee.get('job_title')
+
+    print(prenom, nom, username, age, email, mdp, job_title)
+
+    if age:
+        age = int(age)
+
+    send_user_info(prenom, nom, username, age, email, mdp, job_title)
+
     return render_template('succes_enregistrement.html')
 
 @app.route('/page_validation')
@@ -262,7 +280,7 @@ def get_database_data():
 @login_required
 def logout():
     logout_user()
-    flash('Vous avez ete deconnecte')
+    flash('Vous avez été déconnecté')
     return redirect(url_for('login'))
 
 # ======================== #

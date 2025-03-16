@@ -85,18 +85,34 @@ body {
 }
 
 
-#logo {
+#logo1 {
   position: absolute;  
   top: 10px;          
   left: 10px;        
 }
 
-#logo img {
+#logo2 {
+  position: absolute;  
+  top: 10px;          
+  right: 10px;        
+}
+
+#logo1 img {
   width: 96px; 
   height: auto;
   transition: transform 0.3s ease;  
 }
 
-#logo img:hover {
+#logo2 img {
+  width: 96px; 
+  height: auto;
+  transition: transform 0.3s ease;  
+}
+
+#logo1 img:hover {
+  transform: scale(1.1);
+}
+
+#logo2 img:hover {
   transform: scale(1.1);
 }

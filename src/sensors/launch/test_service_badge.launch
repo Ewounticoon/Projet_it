@@ -15,8 +15,4 @@
         <!-- Arguments spécifiques au noeud peuvent être ajoutés ici -->
         <!-- Exemple : <param name="param_name" value="param_value" /> -->
     </node>
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/web-interface
 </launch>
