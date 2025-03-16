@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Entreprise ENPIWEN</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function updateTables() {
+                $.getJSON('/rfid_data', function(data) {
+                    console.log("Données reçues :", data); // 🔍 Vérifie si la requête fonctionne
+                    // Mise à jour du tableau des badges scannés
+                    $('#badgesTable tbody').empty();
+                    data.mesures.forEach(function(row) {
+                        $('#badgesTable tbody').append(
+                            `<tr><td>${row.date_time}</td><td>${row.numBadge}</td><td>${row.register}</td></tr>`
+                        );
+                    });
+                    
+                    // Mise à jour du tableau des utilisateurs enregistrés
+                    $('#usersTable tbody').empty();
+                    data.infos.forEach(function(row) {
+                        $('#usersTable tbody').append(
+                            `<tr><td>${row.numBadge}</td><td>${row.user}</td><td>${row.prenom}</td><td>${row.nom}</td><td>${row.age}</td><td>${row.mail}</td><td>${row.poste}</td></tr>`
+                        );
+                    });
+                });
+            }
+
+            updateTables(); // Charger les données au démarrage
+            setInterval(updateTables, 2000); // Rafraîchir toutes les 2 secondes
+        });
+    </script>
+</head>
+<body>
+    <div id="logo">
+        <a href="/page_accueil">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
+    <div class="table-container">
+        <h2>📋 Derniers Badges Scannés</h2>
+        <table id="badgesTable">
+            <thead>
+                <tr>
+                    <th>Heure</th>
+                    <th>Numéro de Badge</th>
+                    <th>Enregistré</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <h2>👤 Utilisateurs Enregistrés</h2>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>Numéro de Badge</th>
+                    <th>Utilisateur</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Âge</th>
+                    <th>Email</th>
+                    <th>Poste</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -143,6 +143,53 @@ def get_last_10_values(db_name,table_name, column_name):
     finally:
         conn.close()
 
+
+
+def get_last_values_rfid_mesures(db_name, table_name, limit=10):
+    """ Récupère les 10 dernières valeurs uniques de la table des mesures RFID """
+    db_path = os.path.join(DB_PATH, db_name)
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    # Récupérer les 10 dernières mesures distinctes par numBadge
+    cursor.execute(f"""
+        SELECT DISTINCT numBadge, date_time, register
+        FROM {table_name}
+        ORDER BY date_time DESC
+        LIMIT ?
+    """, (limit,))
+    
+    mesures = [{"numBadge": row[0], "date_time": row[1], "register": row[2]} for row in cursor.fetchall()]
+
+    conn.close()
+    return mesures
+
+def get_rfid_infos(db_name, table_name):
+    """ Récupère les informations uniques des utilisateurs enregistrés (sans doublon et sans mot de passe) """
+    db_path = os.path.join(DB_PATH, db_name)
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    # Récupérer les utilisateurs uniques par numBadge
+    cursor.execute(f"""
+        SELECT DISTINCT numBadge, user, prenom, nom, age, mail, poste
+        FROM {table_name}
+    """)
+
+    infos = [{
+        "numBadge": row[0],
+        "user": row[1],
+        "prenom": row[2],
+        "nom": row[3],
+        "age": row[4],
+        "mail": row[5],
+        "poste": row[6]
+    } for row in cursor.fetchall()]
+
+    conn.close()
+    return infos
+
+
 # ========================== #
 #      SECTION ROUTES        #
 # ========================== #
@@ -180,6 +227,12 @@ def graph_capteurs():
     """ Page affichant les graphiques des capteurs """
     return render_template('graph_capteurs.html')
 
+@app.route('/gestion_utilisateur', methods=['GET', 'POST'])
+@login_required
+def gestion_utilisateur():
+    """ Page affichant l'historique de connexion et les employés de la société """
+    return render_template('gestion_utilisateur.html')
+
 @app.route('/placez_badge', methods=['GET', 'POST'])
 @login_required
 
@@ -204,20 +257,10 @@ def formulaire_badge():
     return render_template('formulaire_badge.html')
 
 @app.route('/succes_enregistrement', methods=['GET', 'POST'])
+@login_required
 def succes_enregistrement():
     """ Page après avoir rempli le formulaire avec succès """
-    return render_template('succes_enregistrement.html')
 
-@app.route('/page_validation')
-@login_required
-def page_validation():
-    """ Page de validation avant suppression d'un badge """
-    del_badge_serv()
-    return render_template('page_validation.html')
-
-@app.route('/traitement', methods=['POST'])
-@login_required
-def traitement():
     """ Traitement du formulaire d'ajout de badge """
     donnee = request.form
     prenom = donnee.get('prenom')
@@ -235,6 +278,32 @@ def traitement():
 
     send_user_info(prenom, nom, username, age, email, mdp, job_title)
 
+    return render_template('succes_enregistrement.html')
+
+@app.route('/page_validation')
+@login_required
+def page_validation():
+    """ Page de validation avant suppression d'un badge """
+    del_badge_serv()
+    return render_template('page_validation.html')
+
+@app.route('/traitement', methods=['POST'])
+@login_required
+def traitement():
+    """ Traitement du formulaire d'ajout de badge """
+    donnee = request.form
+    prenom = donnee.get('prenom')
+    nom = donnee.get('nom')
+    username = donnee.get('username')
+    age = int(donnee.get('age'))
+    email = donnee.get('email')
+    mdp = donnee.get('mdp')
+    job_title = donnee.get('job_title')
+
+    
+    rospy.loginfo(prenom, nom, username, age, email, mdp, job_title)
+    send_user_info(prenom, nom, username, age, email, mdp, job_title)
+
     return "Traitement des données effectué", 200
 
 # ================================ #
@@ -242,7 +311,7 @@ def traitement():
 # ================================ #
 
 
-@app.route('/data') # On triche tkt
+@app.route('/data') 
 @login_required
 def get_database_data():
     """ Renvoie les 10 dernières valeurs des bases de données SQLite """
@@ -255,6 +324,21 @@ def get_database_data():
         "temperature": temperature,
         "humidity": humidite,
         "volume": volume
+    })
+
+
+@app.route('/rfid_data')
+@login_required
+def get_database_data_rfid():
+    """ Renvoie les 10 dernières valeurs des bases de données SQLite rfid """
+    rospy.loginfo("Recherche dans database")
+
+    mesures = get_last_values_rfid_mesures("RFID_mesures.db", "mesures")
+    infos = get_rfid_infos("RFID_infos.db","infos")
+
+    return jsonify({
+        "mesures": mesures,
+        "infos": infos,
     })
 
 
@@ -272,5 +356,5 @@ def logout():
 if __name__ == '__main__':
     init_ros()  # Initialiser ROS avant de lancer Flask
     basedir = os.path.abspath(os.path.dirname(__file__))
-    app.run(host="0.0.0.0", port=5000, ssl_context=(os.path.join(basedir, 'server.crt'), os.path.join(basedir, 'server.key')))
-
+    #app.run(host="0.0.0.0", port=5000, ssl_context=(os.path.join(basedir, 'server.crt'), os.path.join(basedir, 'server.key')))
+    app.run(host="0.0.0.0", port=5000)

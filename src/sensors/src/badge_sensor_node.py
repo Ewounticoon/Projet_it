@@ -16,19 +16,6 @@ class Node_RFID:
 
         # Initialisation du lecteur RFID
         self.rc522 = RFID()
-<<<<<<< HEAD
-        
-        # Initialisation du publisher (topic pour l'ID RFID)
-        self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)  # Utilisation de self.pub_rfid
-        
-        # Affichage dans le terminal pour l'utilisateur
-        rospy.loginfo("En attente d'un badge (pour quitter, Ctrl + c)")
-
-    def read_rfid(self, max_iterations=None):
-        iteration_count = 0
-
-        # Boucle infinie pour lire les tags RFID
-=======
 
         # Initialisation du publisher
         self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)
@@ -38,7 +25,6 @@ class Node_RFID:
     def read_rfid(self, test_mode=False):
         """Lit un badge RFID, s'arrête après une lecture si test_mode=True"""
     
->>>>>>> develop
         while not rospy.is_shutdown():
             self.rc522.wait_for_tag()
             (error, tag_type) = self.rc522.request()
