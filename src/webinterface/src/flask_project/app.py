@@ -316,7 +316,7 @@ def conf_supression():
 # ================================ #
 
 
-@app.route('/data')
+@app.route('/data') # On triche tkt
 @login_required
 def get_database_data():
     """ Renvoie les 10 dernières valeurs des bases de données SQLite """
