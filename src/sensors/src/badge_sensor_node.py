@@ -26,14 +26,17 @@ class Node_RFID:
         """Lit un badge RFID, s'arrête après une lecture si test_mode=True"""
     
         while not rospy.is_shutdown():
+            # Attend qu'un badge soit scanné
             self.rc522.wait_for_tag()
             (error, tag_type) = self.rc522.request()
     
             if error:
-                rospy.logwarn("Erreur lors de la détection du badge RFID")  # ✅ Ajout du log d'erreur
+                rospy.logwarn("Erreur lors de la détection du badge RFID")  # Ajout du log d'erreur
+
+                # Uniquement pour sortir de la boucle en cas de test unitaire
                 if test_mode:
                     return  
-    
+            # on récup l'uid
             (error, uid) = self.rc522.anticoll()
     
             if error:
@@ -45,7 +48,7 @@ class Node_RFID:
             rospy.loginfo(f"Badge détecté avec l'ID : {rfid_id}")
             self.pub_rfid.publish(rfid_id)
     
-            if test_mode:  # ✅ Sortir immédiatement après une seule lecture en mode test
+            if test_mode:  # Sortir immédiatement après une seule lecture en mode test
                 return  
     
             time.sleep(1)  # Évite une lecture trop rapide en boucle

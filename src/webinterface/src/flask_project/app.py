@@ -360,5 +360,5 @@ package_path = rospack.get_path('webinterface')
 server_path =  os.path.join(package_path, 'src', 'flask_project') #chemin d'acces
 if __name__ == '__main__':
     init_ros()  # Initialiser ROS avant Flask
-    #app.run(host="0.0.0.0", port=5000, ssl_context=(os.path.join(server_path, 'server.crt'), os.path.join(server_path, 'server.key')))
+    app.run(host="0.0.0.0", port=5000, ssl_context=(os.path.join(server_path, 'server.crt'), os.path.join(server_path, 'server.key')))
     app.run(host="0.0.0.0", port=5000)
