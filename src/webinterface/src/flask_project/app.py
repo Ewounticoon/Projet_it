@@ -311,37 +311,12 @@ def conf_supression():
     """ Page de validation avant suppression d'un badge """
     return render_template('page_validation.html')
 
-
-@app.route('/traitement', methods=['POST'])
-@login_required
-@admin_required  # Vérifie que l'utilisateur est admin
-
-def traitement():
-    """ Traitement du formulaire d'ajout de badge """
-    donnee = request.form
-    prenom = donnee.get('prenom')
-    nom = donnee.get('nom')
-    username = donnee.get('username')
-    age = donnee.get('age')
-    email = donnee.get('email')
-    mdp = donnee.get('mdp')
-    job_title = donnee.get('job_title')
-
-    print(prenom, nom, username, age, email, mdp, job_title)
-
-    if age:
-        age = int(age)
-
-    send_user_info(prenom, nom, username, age, email, mdp, job_title)
-
-    return "Traitement des données effectué", 200
-
 # ================================ #
 #     ROUTES POUR LES DONNÉES      #
 # ================================ #
 
 
-@app.route('/data') # On triche tkt
+@app.route('/data')
 @login_required
 def get_database_data():
     """ Renvoie les 10 dernières valeurs des bases de données SQLite """
