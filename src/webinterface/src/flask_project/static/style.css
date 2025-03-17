@@ -85,34 +85,67 @@ body {
 }
 
 
-#logo1 {
+#logo {
   position: absolute;  
   top: 10px;          
   left: 10px;        
 }
 
-#logo2 {
-  position: absolute;  
-  top: 10px;          
-  right: 10px;        
-}
-
-#logo1 img {
+#logo img {
   width: 96px; 
   height: auto;
   transition: transform 0.3s ease;  
 }
 
-#logo2 img {
-  width: 96px; 
-  height: auto;
-  transition: transform 0.3s ease;  
-}
-
-#logo1 img:hover {
+#logo img:hover {
   transform: scale(1.1);
 }
 
-#logo2 img:hover {
-  transform: scale(1.1);
+
+/* Style des titres */
+h2 {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 24px;
+  color: #00aaff; /* Bleu clair */
+}
+
+/* Centrage du conteneur */
+.table-container {
+  width: 70%; /* Réduit la largeur */
+  max-width: 800px; /* Empêche un tableau trop large */
+  min-width: 400px; /* Évite un tableau trop petit */
+  margin: 20px auto; /* Centre le tableau */
+  background-color: #16213e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.2);
+}
+
+/* Ajustement de la table */
+table {
+  width: 100%; /* Remplit le conteneur sans être trop large */
+  border-collapse: collapse;
+  background-color: #0f3460;
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+}
+
+/* Style des en-têtes */
+thead {
+  background-color: #00aaff;
+  color: white;
+  font-weight: bold;
+}
+
+/* Bordures et padding */
+th, td {
+  padding: 10px;
+  border: 1px solid #00aaff;
+}
+
+/* Alternance des lignes */
+tbody tr:nth-child(even) {
+  background-color: #112d4e;
 }

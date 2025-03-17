@@ -8,20 +8,12 @@
 </head>
 <body>
 
-    <div id="logo1">
+    <div id="logo">
         <a href="/page_accueil">
             <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
         </a>
     </div>
 
-    <div id="logo2">
-        <a href="/logout">
-            <img src="{{ url_for('static', filename='image/logo_logout.png') }}" alt="Logo du site" title="Retour à l'accueil">
-
-        </a>
-    </div>
-    
-    <br><br><br>
     <h1>Entreprise ENPIWEN</h1>
     <p>Bienvenue dans notre page d'accueil !</p>
     <br>
@@ -41,6 +33,11 @@
     <p>Si vous souhaitez observer les graphiques de surveillance de l'entreprise</p>
     <form method="POST" action="{{ url_for('graph_capteurs') }}">
             <button type="submit">Lire les données</button>
+    </form>
+
+    <p>Pour l'historique des badges scannés et accéder à la liste des employés enregistrés</p>
+    <form method="POST" action="{{ url_for('gestion_utilisateur') }}">
+            <button type="submit">Badges et utilisateurs</button>
     </form>
 </body>
 </html>
