@@ -14,8 +14,9 @@ class TestNodeRFID:
         while not rospy.is_shutdown():
             time.sleep(5)  # Simule l'attente d'un badge RFID
             rfid_id = random.randint(10000, 99999)  # Génère un ID aléatoire
-            rospy.loginfo(f"Badge détecté : {rfid_id}")
-            self.pub_rfid.publish(rfid_id)
+            rfid_id_choise=12345
+            rospy.loginfo(f"Badge détecté : {rfid_id_choise}")
+            self.pub_rfid.publish(rfid_id_choise)
 
 def main():
     rospy.init_node('test_node_rfid', anonymous=True)

@@ -20,7 +20,7 @@ class Node_RFID:
         # Initialisation du publisher
         self.pub_rfid = rospy.Publisher('/topic_rfid', Int32, queue_size=10)
 
-        rospy.loginfo("En attente d'un badge (Ctrl + C pour quitter)")
+        rospy.loginfo("En attente d'un badge")
 
     def read_rfid(self, test_mode=False):
         """Lit un badge RFID, s'arrête après une lecture si test_mode=True"""
@@ -40,18 +40,20 @@ class Node_RFID:
             (error, uid) = self.rc522.anticoll()
     
             if error:
-                rospy.logwarn("Erreur lors de la récupération de l'UID du badge RFID")  # ✅ Ajout du log d'erreur
+                rospy.logwarn("Erreur lors de la récupération de l'UID du badge RFID")  # Ajout du log d'erreur
                 if test_mode:
                     return  
 
             rfid_id = int(''.join(map(str, uid)))  # Convertir l'UID en entier
             rospy.loginfo(f"Badge détecté avec l'ID : {rfid_id}")
+
+            # Publier le message sur le topic
             self.pub_rfid.publish(rfid_id)
     
             if test_mode:  # Sortir immédiatement après une seule lecture en mode test
                 return  
     
-            time.sleep(1)  # Évite une lecture trop rapide en boucle
+            time.sleep(1)  # Evite une lecture trop rapide en boucle
     
 
 

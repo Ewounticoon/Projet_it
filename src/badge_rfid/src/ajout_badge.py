@@ -98,10 +98,10 @@ def listener():
     # Créer la base de données si elle n'existe pas
     create_database_infos()
 
-    # Souscrire au topic
+    # Souscrire au topic pour recupere le numero du badge
     rospy.Subscriber("topic_rfid", Int32, lecture_badge)
 
-    # Définir le service
+    # Initialisation du serveur de service
     rospy.Service('ajout_badge', ajout_badge, ajout_badge_base)
 
     rospy.loginfo("Noeud ajout_badge démarré et en attente de messages...")

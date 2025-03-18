@@ -60,12 +60,13 @@ def load_user(user_id):
     
     rospy.wait_for_service('login_serv')
     try:
+        # Service pour recuperer infos sur la personne
         login_service = rospy.ServiceProxy('login_serv', login_member)
         response = login_service(user_id)
-
+        # Reponse contenant le success, l'id, le username, le mot de passe et le role de l'utilisateur
         if response.success:
             user = User(id=response.id, username=response.username, password=response.password, role=response.role)
-            users_cache[user_id] = user  # Stocke l'utilisateur en cache
+            users_cache[user_id] = user  # Stocke l'utilisateur en cache pour éviter d'appeler le service à chaque fois
             return user
         else:
             return None
@@ -120,10 +121,14 @@ def del_badge_serv():
 
 # Service ROS pour ajouter un badge
 def send_user_info(prenom, nom, username, age, email, mdp, job_title):
+    # En attente de trouver le service ROS ajout_badge
     rospy.wait_for_service('ajout_badge')
     try:
+        # On initialise le service
         ajout_badge_service = rospy.ServiceProxy('ajout_badge', ajout_badge)
+        # On envoie les données sur le service et on attend de recevoir la reponse
         response = ajout_badge_service(prenom, nom, username, age, email, mdp, job_title)
+        # On affiche le resultat de la reponse. Si success est à True alors les donnees ont bien ete ajoute        
         rospy.loginfo(f"Service response: success = {response.success}")
         return response.success
     except rospy.ServiceException as e:
@@ -350,6 +355,7 @@ def get_database_data_rfid():
 @login_required
 def logout():
     logout_user()
+    users_cache.clear()  # Vide complètement le cache des utilisateurs
     flash('Vous avez été déconnecté')
     return redirect(url_for('login'))
 
