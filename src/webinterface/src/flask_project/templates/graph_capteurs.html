@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Entreprise ENPIWEN</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        #graph-container {
+            display: flex;
+            flex-direction: column; /* Graphiques en colonne */
+            align-items: center; /* Centrage horizontal */
+            gap: 20px; /* Espace entre les graphiques */
+        }
+
+        .graph-box {
+            width: 70%; /* Taille plus grande */
+            max-width: 600px;
+            padding: 15px;
+            border: 1px solid #ccc; /* Bordure pour séparation */
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important; /* Taille augmentée */
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+    var temperatureChart = new Chart(document.getElementById('temperatureChart'), {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'Température', data: [], borderColor: 'red', fill: false }] }
+    });
+
+    var humiditeChart = new Chart(document.getElementById('humiditeChart'), {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'Humidité', data: [], borderColor: 'blue', fill: false }] }
+    });
+
+    var volumeChart = new Chart(document.getElementById('volumeChart'), {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'Volume sonore', data: [], borderColor: 'green', fill: false }] }
+    });
+
+    function loadInitialData() {
+        $.getJSON('/data', function(data) {
+            var now = new Date();
+            var labels = [];
+
+            for (var i = 9; i >= 0; i--) {
+                labels.push(new Date(now - i * 2000).toLocaleTimeString());
+            }
+
+            temperatureChart.data.labels = labels;
+            temperatureChart.data.datasets[0].data = data.temperature;
+            temperatureChart.update();
+
+            humiditeChart.data.labels = labels;
+            humiditeChart.data.datasets[0].data = data.humidity;
+            humiditeChart.update();
+
+            volumeChart.data.labels = labels;
+            volumeChart.data.datasets[0].data = data.volume;
+            volumeChart.update();
+        });
+    }
+
+    function updateGraphs() {
+        $.getJSON('/data', function(data) {
+            var now = new Date().toLocaleTimeString();
+
+            var newTemperature = data.temperature[data.temperature.length - 1];
+            var newHumidity = data.humidity[data.humidity.length - 1];
+            var newVolume = data.volume[data.volume.length - 1];
+
+            function updateChart(chart, newValue) {
+                chart.data.labels.push(now);
+                chart.data.datasets[0].data.push(newValue);
+                if (chart.data.labels.length > 10) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                }
+                chart.update();
+            }
+
+            updateChart(temperatureChart, newTemperature);
+            updateChart(humiditeChart, newHumidity);
+            updateChart(volumeChart, newVolume);
+        });
+    }
+
+    loadInitialData();
+    var interval = setInterval(updateGraphs, 2000);
+
+    $("#dev_button_start").click(function () {
+        clearInterval(interval);
+        interval = setInterval(updateGraphs, 2000);
+    });
+
+    $("#dev_button_stop").click(function () {
+        clearInterval(interval);
+    });
+
+    function resetGraph(graph) {
+        graph.data.labels = [];
+        graph.data.datasets[0].data = [];
+        graph.update();
+    }
+
+    $("form").submit(function (event) {
+        event.preventDefault();
+
+        if ($("#temperature").is(":checked")) {
+            resetGraph(temperatureChart);
+        }
+        if ($("#humidite").is(":checked")) {
+            resetGraph(humiditeChart);
+        }
+        if ($("#son").is(":checked")) {
+            resetGraph(volumeChart);
+        }
+    });
+});
+</script>    
+</head>
+<body>
+
+    <div id="logo">
+        <a href="/page_accueil">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
+    <h1>Entreprise ENPIWEN</h1>
+    
+    <form method="POST" action="{{ url_for('page_accueil') }}">
+        <br>
+        <button id="dev_button_start" type="button">Démarrer l'actualisation</button>
+        <button id="dev_button_stop" type="button">Arrêter l'actualisation</button>
+        <br>
+        
+        <fieldset>
+            <legend>Quel(s) graphique(s) voulez-vous réinitialiser ?</legend>
+            <label for="temperature"> <input id="temperature" type="checkbox" name="graphique" value="graph_1" class="inline" checked> Température </label>
+            <label for="humidite"> <input id="humidite" type="checkbox" name="graphique" value="graph_2" class="inline"> Humidité </label>
+            <label for="son"> <input id="son" type="checkbox" name="graphique" value="graph_3" class="inline"> Son </label>
+            <input type="submit" value="Submit" />
+        </fieldset>
+    </form>
+
+    <div id="graph-container">
+        <div class="graph-box">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="graph-box">
+            <canvas id="humiditeChart"></canvas>
+        </div>
+        <div class="graph-box">
+            <canvas id="volumeChart"></canvas>
+        </div>
+    </div>
+     
+</body>
+</html>

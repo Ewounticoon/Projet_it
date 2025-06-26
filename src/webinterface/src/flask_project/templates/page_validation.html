@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Entreprise ENPIWEN</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div id="logo">
+        <a href="/page_accueil">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
+    <br><br><br><br><br><br><br><br><br><br>
+    <h1>Confirmez la suppression du badge</h1>
+    <form method="GET" action="{{url_for('page_validation')}}">
+    <button type="submit">Confirmer</button>
+    </form>
+</body>
+</html>

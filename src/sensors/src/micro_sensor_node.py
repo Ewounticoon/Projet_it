@@ -22,24 +22,31 @@ class Node_micro:
         # Ecrit dans le terminal
         rospy.loginfo("Publication micro")
 
-
+    # Convertir les valeurs en decibel 
     def voltage_to_db(self, voltage, v_ref=1.0):
         if voltage > 0 :
             return 20*math.log10(voltage/v_ref)
         else :
             return -float('inf')
+
     # Publier sur un topic
     def pub_donne_micro(self, event):
         analog_value = self.board.analog[0].read()  # Lire la valeur analogique de la broche A0
-
-        if analog_value is not None:
-            # Conversion de la valeur analogique en tension (de 0 à 5V)
-            voltage = analog_value * 5.0
-            db_value=self.voltage_to_db(voltage,1)
-            #rospy.loginfo("Analog Value : %f, Voltage : %f, dB Value : %f" , analog_value, voltage, db_value)
-            msg = Float32()
-            msg.data = db_value  # Assigner la tension calculée au message
-            self.topic_micro.publish(msg)  # Publier le message
+    
+        if analog_value is None:
+            rospy.logwarn("Valeur analogique None, aucune publication")  # Ajout d'un warning
+            return  # ✅ Arrête l'exécution pour éviter une publication
+    
+        # Conversion de la valeur analogique en tension (de 0 à 5V)
+        voltage = analog_value * 5.0
+        db_value = self.voltage_to_db(voltage, 1)
+        # Initialisation d'un message de type Float32
+        msg = Float32()
+        # On enregistre la valeur dans le message
+        msg.data = db_value
+        # On publie le message sur le topic
+        self.topic_micro.publish(msg)
+    
 
 # Démarrer le noeud
 def main():

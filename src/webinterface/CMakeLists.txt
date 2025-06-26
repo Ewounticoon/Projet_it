@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   badge_rfid
   rospy
   std_msgs
+  sensors
 )
 
 ## System dependencies are found with CMake's conventions

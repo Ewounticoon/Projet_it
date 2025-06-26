@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Entreprise ENPIWEN</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div id="logo1">
+        <a href="/page_accueil">
+            <img src="{{ url_for('static', filename='image/logo_accueil.png') }}" alt="Logo du site" title="Retour à l'accueil">
+        </a>
+    </div>
+
+    <div id="logo2">
+        <a href="/logout">
+            <img src="{{ url_for('static', filename='image/logo_logout.png') }}" alt="Logo du site" title="Retour à l'accueil">
+
+        </a>
+    </div>
+    
+    <br><br><br>
+
+    <h1>Entreprise ENPIWEN</h1>
+    <p>Bienvenue dans notre page d'accueil !</p>
+    <br>
+    <p>Si vous êtes nouveau dans l'entreprise, rentrez un nouveau badge</p>
+    <form method="GET" action="{{ url_for('placez_badge') }}">
+        <input type="hidden" name="action" value="ajouter">
+        <button type="submit">Ajouter un badge</button>
+        <br>
+    </form>
+    <p>Si vous quittez l'entreprise, supprimer votre badge</p>
+    <form method="GET" action="{{ url_for('placez_badge') }}">
+        <input type="hidden" name="action" value="supprimer">
+        <button type="submit">Supprimer un badge</button>
+        <br>
+    </form>
+    
+    <p>Si vous souhaitez observer les graphiques de surveillance de l'entreprise</p>
+    <form method="POST" action="{{ url_for('graph_capteurs') }}">
+            <button type="submit">Lire les données</button>
+    </form>
+
+    <p>Pour l'historique des badges scannés et accéder à la liste des employés enregistrés</p>
+    <form method="POST" action="{{ url_for('gestion_utilisateur') }}">
+            <button type="submit">Badges et utilisateurs</button>
+    </form>
+</body>
+</html>

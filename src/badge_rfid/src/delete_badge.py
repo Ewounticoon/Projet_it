@@ -4,65 +4,88 @@ import rospy
 from std_msgs.msg import Int32
 import sqlite3
 import os
-from datetime import datetime
+import sys
 from badge_rfid.srv import suppr_badge, suppr_badgeResponse
+import rospkg
 
-# Chemin de la base de données
-db_path = os.path.expanduser('~/ros_workspace/src/database/src/RFID_infos.db')
+#Chemin vers database
+rospack = rospkg.RosPack()
+package_path = rospack.get_path('database')
+
+db_path=os.path.join(package_path, 'database', 'RFID_infos.db') #chemin d'acces
 
 # Variable globale pour stocker le numéro de badge
 global_badge = None
 
 def lecture_badge(msg):
     """Callback pour lire les messages du topic."""
-    global global_badge
+    global global_badge  # ✅ Assurer que la variable globale est mise à jour
     global_badge = msg.data
     rospy.loginfo(f"Numéro de badge reçu : {global_badge}")
 
+    # ✅ Debug print
+    print(f"📌 [DEBUG] Numéro de badge mis à jour : {global_badge}")
+    sys.stdout.flush()
+
+
 def del_badge_base(req):
-    """Supprime toutes les entrées avec le numéro de badge si le service est activé."""
+    """Supprime un badge de la base de données."""
     global global_badge
 
-    if req.delete:  # Vérifie si la requête est True
-        if global_badge is None:
-            rospy.logwarn("Aucun badge reçu pour suppression.")
-            return suppr_badgeResponse(False)
+    print(f"📌 [DEBUG] Valeur de global_badge avant suppression : {global_badge}")
+    sys.stdout.flush()
 
-        try:
-            conn = sqlite3.connect(db_path)
-            cursor = conn.cursor()
+    if global_badge is None:
+        rospy.logwarn("Aucun badge reçu.")
+        print("❌ [ERROR] Aucun badge reçu.")
+        sys.stdout.flush()
+        return suppr_badgeResponse(validation=False)
 
-            # Suppression de toutes les entrées avec le numéro de badge
-            cursor.execute("DELETE FROM infos WHERE numBadge = ?", (global_badge,))
-            deleted_rows = conn.total_changes  # Nombre de lignes supprimées
+    conn = None  # ✅ Initialise conn pour éviter l'erreur
 
-            conn.commit()
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        print(f"📌 [DEBUG] Suppression du badge en cours : {global_badge}")
+        sys.stdout.flush()
+
+        cursor.execute("DELETE FROM infos WHERE numBadge = ?", (global_badge,))
+        conn.commit()
+
+        print(f"📌 [DEBUG] total_changes après suppression : {conn.total_changes}")
+        sys.stdout.flush()
+
+        if conn.total_changes > 0:
+            rospy.loginfo(f"Badge {global_badge} supprimé.")
+            print(f"✅ [SUCCESS] Badge {global_badge} supprimé.")
+            sys.stdout.flush()
+            return suppr_badgeResponse(validation=True)
+        else:
+            rospy.logwarn(f"Aucune entrée pour le badge : {global_badge}")
+            print(f"⚠️ [WARNING] Aucune entrée trouvée pour le badge {global_badge}.")
+            sys.stdout.flush()
+            return suppr_badgeResponse(validation=False)
+
+    except sqlite3.Error as e:
+        rospy.logerr(f"Erreur SQLite : {e}")
+        print(f"❌ [ERROR] Erreur SQL : {e}")
+        sys.stdout.flush()
+        return suppr_badgeResponse(validation=False)
+
+    finally:
+        if conn:  # ✅ Vérifie que la connexion a bien été créée avant de la fermer
             conn.close()
 
-            if deleted_rows > 0:
-                rospy.loginfo(f"Badge {global_badge} supprimé de la base de données.")
-                return suppr_badgeResponse(True)
-            else:
-                rospy.logwarn(f"Aucune entrée trouvée pour le badge {global_badge}.")
-                return suppr_badgeResponse(False)
 
-        except sqlite3.Error as e:
-            rospy.logerr(f"Erreur SQLite lors de la suppression : {e}")
-            return suppr_badgeResponse(False)
-    
-    return suppr_badgeResponse(False)
 
 def listener():
     """Initialise le noeud ROS et les services."""
     rospy.init_node('Del_badge', anonymous=True)
-
-    # Souscrire au topic
     rospy.Subscriber("topic_rfid", Int32, lecture_badge)
-
-    # Définir le service
     rospy.Service('del_badge', suppr_badge, del_badge_base)
 
-    rospy.loginfo("Noeud Del_badge démarré et en attente de l'instruction...")
+    rospy.loginfo("Noeud Del_badge démarré et en attente d'instructions...")
     rospy.spin()
 
 if __name__ == '__main__':
